@@ -1,216 +1,248 @@
 <!DOCTYPE html>
-<html lang="="en">
+<html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Bloodline: Ashaterra – Login</title>
-
-  <!-- Google Fonts -->
-  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700&display=swap" rel="stylesheet" />
-
-  <!-- Firebase SDK -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Bloodline: Ashaterra</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet"/>
   <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
-
   <style>
     :root {
-      --bg-dark: #0d0f15;
-      --glass-dark: rgba(255, 255, 255, 0.05);
-      --accent: #d8b263;
-      --white: #f0f0f0;
-      --gray: #aaa;
+      --primary: #d4af7f;
+      --text: #f0f0f0;
+      --bg: #0c0c0f;
+      --glass: rgba(255,255,255,0.06);
+      --error: #ff6b6b;
+      --success: #8fffda;
     }
 
     * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-      font-family: 'Outfit', sans-serif;
-    }
-
-    body, html {
-      height: 100%;
-      background-color: var(--bg-dark);
-      color: var(--white);
+      margin: 0; padding: 0; box-sizing: border-box;
+      font-family: 'Inter', sans-serif;
     }
 
     body {
-      background: url('assets/bg-ashaterra.jpg') center/cover no-repeat fixed;
-      display: flex;
-      align-items: center;
-      justify-content: center;
+      background: url('assets/bg-ashaterra.jpg') no-repeat center center / cover;
+      height: 100vh;
+      overflow: hidden;
     }
 
-    .glass {
-      backdrop-filter: blur(16px);
-      background: var(--glass-dark);
-      border: 1px solid rgba(255,255,255,0.1);
-      border-radius: 16px;
+    .splash {
+      position: fixed; top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: rgba(0,0,0,0.7);
+      backdrop-filter: blur(6px);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      z-index: 9999;
+      animation: fadeOut 2s ease-out 4s forwards;
+    }
+
+    .splash h1 {
+      color: var(--primary);
+      font-size: 2.6rem;
+      text-shadow: 0 0 10px #000;
+      opacity: 0;
+      animation: fadeInUp 2s ease-in-out forwards;
+    }
+
+    .loading-bar {
+      width: 60%; height: 6px;
+      background: rgba(255,255,255,0.2);
+      border-radius: 10px;
+      overflow: hidden;
+      margin-top: 20px;
+    }
+
+    .progress {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(to right, #c8a254, #fff0c4);
+      animation: progress 3.5s ease forwards;
+    }
+
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(40px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes progress {
+      to { width: 100%; }
+    }
+
+    @keyframes fadeOut {
+      to {
+        opacity: 0;
+        visibility: hidden;
+        pointer-events: none;
+      }
+    }
+
+    .auth-container {
+      display: none;
+      position: absolute;
+      top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      background: var(--glass);
+      backdrop-filter: blur(20px);
       padding: 40px;
-      width: 100%;
+      border-radius: 20px;
+      width: 90%;
       max-width: 400px;
-      animation: fadeIn 1s ease-in-out;
+      animation: fadeIn 1.4s ease 4s forwards;
+    }
+
+    .auth-container.show {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
     }
 
     h2 {
-      text-align: center;
-      margin-bottom: 24px;
-      font-weight: 600;
-      font-size: 1.8rem;
-      color: var(--accent);
+      color: var(--primary);
+      margin-bottom: 20px;
     }
 
     input {
       width: 100%;
-      padding: 12px 16px;
+      padding: 12px;
       margin-bottom: 14px;
       border: none;
       border-radius: 8px;
-      background: rgba(255,255,255,0.08);
-      color: var(--white);
-      font-size: 1rem;
+      background: rgba(255,255,255,0.07);
+      color: var(--text);
     }
 
     input::placeholder {
-      color: var(--gray);
+      color: #aaa;
     }
 
     button {
       width: 100%;
       padding: 12px;
-      margin-top: 8px;
-      background-color: var(--accent);
-      border: none;
-      border-radius: 8px;
+      background: var(--primary);
       color: #000;
       font-weight: 600;
+      border: none;
+      border-radius: 8px;
+      margin-bottom: 10px;
       cursor: pointer;
-      transition: background 0.3s ease;
+      transition: all 0.3s ease;
     }
 
     button:hover {
-      background-color: #f1d08d;
+      background: #f1c17d;
+      transform: scale(1.02);
     }
 
-    .btn-secondary {
+    .btn-outline {
       background: transparent;
-      color: var(--accent);
-      border: 1px solid var(--accent);
+      color: var(--primary);
+      border: 1px solid var(--primary);
     }
 
-    .btn-secondary:hover {
-      background-color: var(--accent);
+    .btn-outline:hover {
+      background: var(--primary);
       color: #000;
     }
 
-    .link {
-      text-align: center;
-      margin-top: 10px;
+    .link, .message {
+      color: #bbb;
       font-size: 0.9rem;
-      color: var(--gray);
+      margin-top: 5px;
+      text-align: center;
       cursor: pointer;
     }
 
-    .error, .success {
-      text-align: center;
-      font-size: 0.9rem;
+    .message {
       margin-top: 10px;
+      font-weight: 500;
     }
 
-    .error {
-      color: #ff6b6b;
-    }
-
-    .success {
-      color: #7cffb7;
-    }
+    .error { color: var(--error); }
+    .success { color: var(--success); }
 
     @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(20px); }
-      to   { opacity: 1; transform: translateY(0); }
-    }
-
-    .logo {
-      text-align: center;
-      margin-bottom: 20px;
-      font-size: 1.2rem;
-      font-weight: 700;
-      letter-spacing: 1px;
-      color: var(--white);
+      from { opacity: 0; transform: scale(0.95); }
+      to { opacity: 1; transform: scale(1); }
     }
   </style>
 </head>
 
 <body>
-  <div class="glass" id="login-container">
-    <div class="logo">BLOODLINE: ASHATERRA</div>
-    <h2 id="form-title">Login</h2>
-    
-    <input type="email" id="email" placeholder="Email" />
-    <input type="password" id="password" placeholder="Password" />
-    
-    <button onclick="login()">Login</button>
-    <div class="link" onclick="forgotPassword()">Forgot Password?</div>
-
-    <button class="btn-secondary" onclick="toggleForm()">Don't have an account? Register</button>
-    <button class="btn-secondary" onclick="googleLogin()">Login with Google</button>
-    <button class="btn-secondary" onclick="guestLogin()">Continue as Guest</button>
-
-    <div class="error" id="error-msg"></div>
-    <div class="success" id="success-msg"></div>
+  <div class="splash" id="splash">
+    <h1>Bloodline: Ashaterra</h1>
+    <div class="loading-bar"><div class="progress"></div></div>
   </div>
 
-  <script type="module">
-  // Import the functions you need from the SDKs you need
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-app.js";
-  // TODO: Add SDKs for Firebase products that you want to use
-  // https://firebase.google.com/docs/web/setup#available-libraries
+  <div class="auth-container" id="auth">
+    <h2 id="form-title">Login</h2>
+    <input type="email" id="email" placeholder="Email" />
+    <input type="password" id="password" placeholder="Password" />
+    <button id="action-btn">Login</button>
+    <div class="link" id="toggle-link">Don't have an account? Register</div>
+    <div class="link" id="forgot-link">Forgot Password?</div>
+    <button class="btn-outline" id="google-btn">Login with Google</button>
+    <button class="btn-outline" id="guest-btn">Continue as Guest</button>
+    <div class="message"><span id="error" class="error"></span><span id="success" class="success"></span></div>
+  </div>
 
-  // Your web app's Firebase configuration
-  const firebaseConfig = {
-    apiKey: "AIzaSyBfL94xCFj717I6RSZlIwV7wBJCQyAEMhM",
-    authDomain: "sample-firebase-ai-app-db6b4.firebaseapp.com",
-    projectId: "sample-firebase-ai-app-db6b4",
-    storageBucket: "sample-firebase-ai-app-db6b4.firebasestorage.app",
-    messagingSenderId: "735600667287",
-    appId: "1:735600667287:web:7bdee34c377e50964817d2"
-  };
-
-  // Initialize Firebase
-  const app = initializeApp(firebaseConfig);
-</script>
-
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyAstsRmnykZJlueSMdJMPYEs1l-udFWWT0",
+      authDomain: "bloodline-ashaterra.firebaseapp.com",
+      projectId: "bloodline-ashaterra",
+      storageBucket: "bloodline-ashaterra.appspot.com",
+      messagingSenderId: "925417667104",
+      appId: "1:925417667104:web:e2ccafa1629333ef789a45",
+      measurementId: "G-E8JV3WYFXV"
+    };
     firebase.initializeApp(firebaseConfig);
     const auth = firebase.auth();
 
+    const splash = document.getElementById("splash");
+    const authContainer = document.getElementById("auth");
+
+    splash.addEventListener("animationend", () => {
+      authContainer.classList.add("show");
+    });
+
+    const formTitle = document.getElementById("form-title");
     const emailInput = document.getElementById("email");
     const passwordInput = document.getElementById("password");
-    const errorMsg = document.getElementById("error-msg");
-    const successMsg = document.getElementById("success-msg");
-    const formTitle = document.getElementById("form-title");
+    const actionButton = document.getElementById("action-btn");
+    const toggleLink = document.getElementById("toggle-link");
+    const forgotLink = document.getElementById("forgot-link");
+    const googleBtn = document.getElementById("google-btn");
+    const guestBtn = document.getElementById("guest-btn");
+    const errorMsg = document.getElementById("error");
+    const successMsg = document.getElementById("success");
+
     let isLogin = true;
 
     function toggleForm() {
       isLogin = !isLogin;
-      formTitle.innerText = isLogin ? "Login" : "Register";
-      document.querySelector("button").innerText = isLogin ? "Login" : "Register";
+      formTitle.textContent = isLogin ? "Login" : "Register";
+      actionButton.textContent = isLogin ? "Login" : "Register";
+      toggleLink.textContent = isLogin ? "Don't have an account? Register" : "Already have an account? Login";
+      errorMsg.textContent = "";
+      successMsg.textContent = "";
     }
 
     function showMessage(msg, type = 'error') {
-      errorMsg.innerText = "";
-      successMsg.innerText = "";
-      if (type === 'error') errorMsg.innerText = msg;
-      else successMsg.innerText = msg;
+      errorMsg.textContent = "";
+      successMsg.textContent = "";
+      if (type === 'error') errorMsg.textContent = msg;
+      else successMsg.textContent = msg;
     }
 
     function login() {
-      const email = emailInput.value;
-      const pass = passwordInput.value;
-
-      if (!email || !pass) {
-        showMessage("Please fill all fields.");
-        return;
-      }
+      const email = emailInput.value.trim();
+      const pass = passwordInput.value.trim();
+      if (!email || !pass) return showMessage("Please fill all fields.");
 
       if (isLogin) {
         auth.signInWithEmailAndPassword(email, pass)
@@ -225,9 +257,8 @@
     }
 
     function forgotPassword() {
-      const email = emailInput.value;
+      const email = emailInput.value.trim();
       if (!email) return showMessage("Enter your email to reset password.");
-
       auth.sendPasswordResetEmail(email)
         .then(() => showMessage("Reset link sent to your email.", "success"))
         .catch(err => showMessage(err.message));
@@ -246,10 +277,16 @@
         .catch(err => showMessage(err.message));
     }
 
+    actionButton.addEventListener("click", login);
+    toggleLink.addEventListener("click", toggleForm);
+    forgotLink.addEventListener("click", forgotPassword);
+    googleBtn.addEventListener("click", googleLogin);
+    guestBtn.addEventListener("click", guestLogin);
+
     auth.onAuthStateChanged(user => {
       if (user) {
         console.log("User logged in:", user.uid);
-        // Redirect to main game if needed
+        // TODO: redirect to game.html
       }
     });
   </script>
