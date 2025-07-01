@@ -1,244 +1,346 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Bloodline: Ashaterra - Login</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Bloodline: Ashaterra</title>
   <style>
-    * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
+    :root {
+      --color-primary: #2b0e0e;
+      --color-accent: #c42b2b;
+      --color-text: #fff;
+      --font-main: 'Segoe UI', sans-serif;
+    }
     body {
-      background: linear-gradient(to bottom, #1a0d0d, #2b0000);
-      height: 100vh;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      overflow: hidden;
-      position: relative;
-      color: #fff;
+      margin: 0;
+      font-family: var(--font-main);
+      background: linear-gradient(to bottom, #1e0e0e, #000);
+      color: var(--color-text);
+      overflow-x: hidden;
     }
     .container {
-      background: rgba(0,0,0,0.5);
-      backdrop-filter: blur(15px);
-      padding: 30px;
-      border-radius: 15px;
-      box-shadow: 0 0 25px rgba(255, 215, 0, 0.2);
-      width: 90%;
-      max-width: 420px;
-      animation: fadeIn 1s ease;
-    }
-    .container h2 {
+      max-width: 480px;
+      margin: auto;
+      padding: 30px 20px;
       text-align: center;
-      margin-bottom: 15px;
-      color: gold;
+    }
+    .step {
+      display: none;
+      animation: fadeIn 0.5s ease;
+    }
+    .step.active {
+      display: block;
+    }
+    h1, h2 {
+      color: #ffebcd;
     }
     input, select {
-      width: 100%;
-      padding: 12px;
-      margin: 8px 0;
+      width: 90%;
+      padding: 10px;
+      margin: 10px auto;
+      display: block;
+      border: none;
+      border-radius: 6px;
+    }
+    .btn {
+      padding: 12px 24px;
+      margin: 10px;
+      background: linear-gradient(135deg, #a31111, #f33);
+      color: #fff;
       border: none;
       border-radius: 8px;
-      background: #1b1b1b;
-      color: white;
+      cursor: pointer;
       transition: 0.3s;
     }
-    input:focus {
-      outline: none;
-      box-shadow: 0 0 10px gold;
-    }
-    button {
-      width: 100%;
-      padding: 12px;
-      margin-top: 12px;
-      background: linear-gradient(to right, gold, #cc8800);
-      color: black;
-      font-weight: bold;
-      border: none;
-      border-radius: 10px;
-      cursor: pointer;
-      transition: 0.3s ease;
-    }
-    button:hover {
-      transform: scale(1.03);
-      filter: brightness(1.2);
-    }
-    .toggle {
-      margin-top: 10px;
-      color: #bbb;
-      text-align: center;
-      cursor: pointer;
-      font-size: 0.9em;
-    }
-    .toast {
-      position: fixed;
-      top: 15px;
-      right: 15px;
-      padding: 12px 18px;
-      border-radius: 10px;
-      color: white;
-      backdrop-filter: blur(10px);
-      opacity: 0;
-      transition: 0.5s;
-      z-index: 999;
-      font-size: 0.9em;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-    .toast.show { opacity: 1; }
-    .toast.success { background: rgba(40, 167, 69, 0.8); }
-    .toast.error { background: rgba(220, 53, 69, 0.8); }
-    .footer {
-      position: absolute;
-      bottom: 12px;
-      right: 15px;
-      font-size: 0.8em;
-      color: #ccc;
+    .btn:hover {
+      background: #ff4444;
+      transform: scale(1.05);
     }
     .rgb-line {
-      position: absolute;
-      bottom: 0;
-      left: 0;
       height: 4px;
-      width: 100%;
-      background: linear-gradient(90deg, red, gold, green, blue, violet);
-      animation: rgbFlow 5s linear infinite;
+      background: linear-gradient(90deg, red, orange, yellow, green, cyan, blue, violet, red);
+      background-size: 400% 400%;
+      animation: rgbLoop 4s linear infinite;
+      margin-top: 30px;
     }
-    @keyframes fadeIn { from { opacity: 0; transform: scale(0.95); } to { opacity: 1; transform: scale(1); } }
-    @keyframes rgbFlow { 0% { filter: hue-rotate(0deg); } 100% { filter: hue-rotate(360deg); } }
-    .captcha-box {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
+    @keyframes rgbLoop {
+      0% { background-position: 0% 50%; }
+      100% { background-position: 100% 50%; }
     }
-    .captcha-code {
-      font-weight: bold;
-      background: #222;
+    .notif {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      background: rgba(40,40,40,0.9);
+      padding: 12px 20px;
+      border-left: 4px solid crimson;
+      border-radius: 8px;
+      font-size: 14px;
+      opacity: 0;
+      transition: opacity 0.4s ease;
+    }
+    .notif.show {
+      opacity: 1;
+    }
+    footer {
+      color: #888;
+      text-align: right;
+      font-size: 12px;
       padding: 10px;
-      border-radius: 6px;
-      letter-spacing: 2px;
-      user-select: none;
     }
-    .refresh {
-      background: none;
-      border: none;
-      color: gold;
-      cursor: pointer;
-      font-size: 0.9em;
+    .hidden { display: none; }
+    .tap-screen {
+      position: absolute;
+      top: 40%;
+      width: 100%;
+      text-align: center;
+      font-size: 24px;
+      opacity: 0.8;
+      animation: pulse 1.5s infinite alternate;
+    }
+    @keyframes pulse {
+      from { transform: scale(1); opacity: 0.8; }
+      to { transform: scale(1.1); opacity: 1; }
     }
   </style>
 </head>
 <body>
-
-<div class="container">
-  <h2 id="form-title">Login</h2>
-  <input id="username" placeholder="Username" />
-  <input id="email" type="email" placeholder="Email" />
-  <input id="password" type="password" placeholder="Password" />
-  <input id="pin" type="number" placeholder="PIN 6-digit" />
-  <input id="dob" type="date" />
-  <select id="country">
-    <option value="">Select Country</option>
-    <option>Indonesia</option>
-    <option>USA</option>
-    <option>Japan</option>
-  </select>
-  <div class="captcha-box">
-    <div class="captcha-code" id="captcha-code">AB12C</div>
-    <button class="refresh" onclick="generateCaptcha()">⟳</button>
+  <div id="splash">
+    <div class="tap-screen">Tap to Start</div>
+    <div class="rgb-line"></div>
   </div>
-  <input id="captcha" placeholder="Enter Captcha" />
-  <button onclick="submitForm()">Login</button>
-  <div class="toggle" onclick="toggleMode()">Don't have an account? Register</div>
-</div>
 
-<div class="toast" id="toast"></div>
-<div class="footer" id="footer">ID: - | v3.0</div>
-<div class="rgb-line"></div>
+  <div class="container hidden" id="mainContent">
+    <!-- Steps akan muncul di sini -->
 
-<audio id="clickSound" src="https://cdn.pixabay.com/download/audio/2022/03/15/audio_23716337fc.mp3?filename=click-button-140881.mp3"></audio>
-<audio id="errorSound" src="https://cdn.pixabay.com/download/audio/2021/09/14/audio_bf2813c455.mp3?filename=error-2-126514.mp3"></audio>
-<audio id="successSound" src="https://cdn.pixabay.com/download/audio/2022/03/08/audio_48e1050da0.mp3?filename=success-1-6297.mp3"></audio>
+    <!-- Step: Login/Register -->
+    <div class="step active" id="step-login">
+      <h1>Bloodline: Ashaterra</h1>
+      <h2 id="formTitle">Login</h2>
 
+      <input type="email" id="email" placeholder="Email" />
+      <input type="password" id="password" placeholder="Password" />
+      <input type="text" id="pin" maxlength="4" placeholder="PIN (4-digit)" />
+      <input type="text" id="captcha" placeholder="Enter CAPTCHA: 74FDK" />
+      <select id="country">
+        <option value="">Select Country</option>
+        <option>Indonesia</option>
+        <option>USA</option>
+        <option>Japan</option>
+        <option>Germany</option>
+        <option>Other</option>
+      </select>
+      <input type="date" id="dob" />
+
+      <button class="btn" onclick="handleAuth()">Login</button>
+      <button class="btn" onclick="toggleAuth()">Switch to Register</button>
+      <p onclick="forgotPass()" style="color:#aaa; cursor:pointer;">Forgot Password?</p>
+
+      <div id="notif" class="notif"></div>
+      <footer>
+        v3.0 - ID: <span id="userId">-</span>
+      </footer>
+    </div>
+
+    <!-- Step: Avatar Selection -->
+    <div class="step" id="step-avatar">
+      <h2>Select Your Avatar</h2>
+      <div id="avatarGrid"></div>
+      <button class="btn" onclick="goToStep('step-role')">Next</button>
+    </div>
+
+    <!-- Step: Role Selection -->
+    <div class="step" id="step-role">
+      <h2>Choose Your Role</h2>
+      <select id="role">
+        <option>Pyromancer (Fire)</option>
+        <option>Shadowblade (Dark)</option>
+        <option>Druid (Nature)</option>
+        <option>Chronoguard (Time)</option>
+        <option>Celestian (Light)</option>
+        <option>Ashfallen (Void)</option>
+      </select>
+      <button class="btn" onclick="goToStep('step-gender')">Next</button>
+    </div>
+
+    <!-- Step: Gender Selection -->
+    <div class="step" id="step-gender">
+      <h2>Select Gender</h2>
+      <select id="gender">
+        <option>Male</option>
+        <option>Female</option>
+        <option>Other</option>
+      </select>
+      <button class="btn" onclick="goToStep('step-body')">Next</button>
+    </div>
+
+    <!-- Step: Body & Details -->
+    <div class="step" id="step-body">
+      <h2>Customize Appearance</h2>
+      <input type="text" id="eyes" placeholder="Eye Type (e.g. Sharp)" />
+      <input type="text" id="hair" placeholder="Hair Style" />
+      <input type="color" id="eyeColor" value="#552200" />
+      <input type="color" id="hairColor" value="#222222" />
+      <input type="number" id="height" placeholder="Height (cm)" />
+      <input type="text" id="tattoo" placeholder="Tattoo Type" />
+      <input type="text" id="tattooPlace" placeholder="Tattoo Placement" />
+      <button class="btn" onclick="goToStep('step-gear')">Next</button>
+    </div>
+
+    <!-- Step: Gear & Outfit -->
+    <div class="step" id="step-gear">
+      <h2>Choose Gear & Outfit</h2>
+      <input type="text" id="top" placeholder="Top (e.g. Hoodie)" />
+      <input type="text" id="bottom" placeholder="Bottom (e.g. Jeans)" />
+      <input type="text" id="footwear" placeholder="Footwear" />
+      <input type="text" id="accessory" placeholder="Accessory (e.g. Glasses)" />
+      <button class="btn" onclick="goToStep('step-pact')">Continue</button>
+    </div>
+
+    <!-- Step: Blood Pact System -->
+    <div class="step" id="step-pact">
+      <h2>Blood Pact</h2>
+      <p>Do you wish to forge a Blood Pact for forbidden power?</p>
+      <select id="pact">
+        <option value="none">No Pact</option>
+        <option value="curse-of-flame">Curse of Flame</option>
+        <option value="void-oath">Oath of the Void</option>
+        <option value="immortal-chain">Immortal Chain</option>
+      </select>
+      <button class="btn" onclick="finalizeCharacter()">Finalize Character</button>
+    </div>
+
+    <!-- Step: Welcome / Result -->
+    <div class="step" id="step-result">
+      <h2>Welcome, <span id="resultName"></span>!</h2>
+      <p>You have received:</p>
+      <ul>
+        <li>Starter Pack: 1000 Gold</li>
+        <li>Gear: Traveler's Cloak</li>
+        <li>Pact Status: <span id="pactStatus"></span></li>
+      </ul>
+      <div class="btn" onclick="alert('Main menu soon...')">Proceed to Main Menu</div>
+    </div>
+  </div>
+
+  <div id="notif" class="notif"></div>
 <script>
+  const steps = document.querySelectorAll('.step');
+  const splash = document.getElementById("splash");
+  const mainContent = document.getElementById("mainContent");
+  const notif = document.getElementById("notif");
+
   let isLogin = true;
-  const toast = document.getElementById("toast");
-  const footer = document.getElementById("footer");
-  const captchaCode = document.getElementById("captcha-code");
-  const clickSound = document.getElementById("clickSound");
-  const errorSound = document.getElementById("errorSound");
-  const successSound = document.getElementById("successSound");
 
-  const emailInput = document.getElementById("email");
-  const passwordInput = document.getElementById("password");
-  const usernameInput = document.getElementById("username");
-  const pinInput = document.getElementById("pin");
-  const dobInput = document.getElementById("dob");
-  const countryInput = document.getElementById("country");
-  const captchaInput = document.getElementById("captcha");
+  document.body.addEventListener("click", () => {
+    if (!mainContent.classList.contains("hidden")) return;
+    splash.classList.add("hidden");
+    mainContent.classList.remove("hidden");
+  }, { once: true });
 
-  function generateCaptcha() {
-    const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
-    let code = '';
-    for (let i = 0; i < 5; i++) code += chars.charAt(Math.floor(Math.random() * chars.length));
-    captchaCode.innerText = code;
+  function goToStep(id) {
+    steps.forEach(s => s.classList.remove("active"));
+    document.getElementById(id).classList.add("active");
   }
 
-  generateCaptcha();
-
-  function playClick() {
-    clickSound.play();
-    if (navigator.vibrate) navigator.vibrate([15]);
-  }
-
-  function showToast(message, type = 'error') {
-    toast.innerText = (type === 'error' ? '❌ ' : '✅ ') + message;
-    toast.className = 'toast show ' + type;
-    if (type === 'success') successSound.play(); else errorSound.play();
-    setTimeout(() => toast.classList.remove('show'), 3500);
-  }
-
-  function toggleMode() {
+  function toggleAuth() {
     isLogin = !isLogin;
-    document.getElementById("form-title").innerText = isLogin ? "Login" : "Register";
-    document.querySelector("button").innerText = isLogin ? "Login" : "Register";
-    document.querySelector(".toggle").innerText = isLogin ? "Don't have an account? Register" : "Already have an account? Login";
-    playClick();
-    generateCaptcha();
+    document.getElementById("formTitle").innerText = isLogin ? "Login" : "Register";
+    document.querySelector(".btn").innerText = isLogin ? "Login" : "Register";
   }
 
-  function submitForm() {
-    playClick();
-    const email = emailInput.value.trim();
-    const pass = passwordInput.value.trim();
-    const uname = usernameInput.value.trim();
-    const pin = pinInput.value.trim();
-    const dob = dobInput.value;
-    const country = countryInput.value;
-    const captcha = captchaInput.value.trim();
-    const realCaptcha = captchaCode.innerText.trim();
+  function notify(msg, success = false) {
+    notif.innerText = msg;
+    notif.style.borderLeft = success ? '4px solid lime' : '4px solid crimson';
+    notif.classList.add("show");
+    setTimeout(() => notif.classList.remove("show"), 4000);
+    navigator.vibrate?.(success ? 50 : [100, 50, 100]);
+  }
 
-    if (!email || !pass || !uname || !pin || !dob || !country || !captcha) return showToast("Please fill all fields.");
-    if (captcha !== realCaptcha) return showToast("Incorrect captcha.");
+  function handleAuth() {
+    const email = document.getElementById("email").value;
+    const pass = document.getElementById("password").value;
+    const pin = document.getElementById("pin").value;
+    const dob = new Date(document.getElementById("dob").value);
+    const captcha = document.getElementById("captcha").value;
+    const country = document.getElementById("country").value;
 
-    const birthYear = new Date(dob).getFullYear();
-    const age = new Date().getFullYear() - birthYear;
-    if (!isLogin && age < 13) return showToast("Minimal usia 13 tahun.");
+    const age = new Date().getFullYear() - dob.getFullYear();
+    const id = email + "::" + pass;
 
-    if (!isLogin) {
-      if (localStorage.getItem("user_" + email)) return showToast("Email sudah terdaftar.");
-      const id = "ID-" + Math.floor(Math.random() * 999999);
-      const user = { uname, pass, pin, dob, country, id };
-      localStorage.setItem("user_" + email, JSON.stringify(user));
-      footer.innerText = `ID: ${id} | v3.0`;
-      showToast("Account created!", "success");
+    if (!email || !pass || !pin || !captcha || !dob || !country)
+      return notify("Please fill all fields.");
+    if (pin.length !== 4) return notify("PIN must be 4 digits.");
+    if (captcha.toUpperCase() !== "74FDK") return notify("CAPTCHA incorrect.");
+    if (age < 13) return notify("You must be 13+ to register.");
+
+    if (isLogin) {
+      const user = localStorage.getItem(id);
+      if (!user) return notify("Account not found.");
+      notify("Login successful!", true);
+      setTimeout(() => {
+        document.getElementById("userId").innerText = id.split("::")[0];
+        goToStep("step-avatar");
+        createAvatars();
+      }, 1000);
     } else {
-      const user = JSON.parse(localStorage.getItem("user_" + email));
-      if (!user || user.pass !== pass || user.pin !== pin) return showToast("Login gagal. Periksa ulang.");
-      footer.innerText = `ID: ${user.id} | v3.0`;
-      showToast("Welcome back, " + user.uname + "!", "success");
+      if (localStorage.getItem(id)) return notify("Account already exists.");
+      const userData = JSON.stringify({ email, pass, pin, dob, country });
+      localStorage.setItem(id, userData);
+      notify("Account registered!", true);
     }
   }
-</script>
 
+  function forgotPass() {
+    const email = document.getElementById("email").value;
+    if (!email) return notify("Enter your email.");
+    notify("Reset link (simulated) sent to: " + email, true);
+  }
+
+  function createAvatars() {
+    const grid = document.getElementById("avatarGrid");
+    grid.innerHTML = "";
+    for (let i = 1; i <= 12; i++) {
+      const img = document.createElement("img");
+      img.src = `https://api.dicebear.com/7.x/adventurer/svg?seed=${i}`;
+      img.style.width = "70px";
+      img.style.margin = "5px";
+      img.style.border = "2px solid transparent";
+      img.style.borderRadius = "50%";
+      img.onclick = () => {
+        document.querySelectorAll("#avatarGrid img").forEach(x => x.style.border = "2px solid transparent");
+        img.style.border = "2px solid lime";
+        localStorage.setItem("avatar", img.src);
+      };
+      grid.appendChild(img);
+    }
+  }
+
+  function finalizeCharacter() {
+    const pact = document.getElementById("pact").value;
+    const role = document.getElementById("role").value;
+    const gender = document.getElementById("gender").value;
+    const details = {
+      eyes: document.getElementById("eyes").value,
+      hair: document.getElementById("hair").value,
+      eyeColor: document.getElementById("eyeColor").value,
+      hairColor: document.getElementById("hairColor").value,
+      height: document.getElementById("height").value,
+      tattoo: document.getElementById("tattoo").value,
+      tattooPlace: document.getElementById("tattooPlace").value,
+      top: document.getElementById("top").value,
+      bottom: document.getElementById("bottom").value,
+      footwear: document.getElementById("footwear").value,
+      accessory: document.getElementById("accessory").value,
+      gender, role, pact,
+      avatar: localStorage.getItem("avatar")
+    };
+    localStorage.setItem("character", JSON.stringify(details));
+    notify("Character created!", true);
+    document.getElementById("resultName").innerText = role;
+    document.getElementById("pactStatus").innerText = pact.replaceAll("-", " ");
+    goToStep("step-result");
+  }
+</script>
 </body>
 </html>
