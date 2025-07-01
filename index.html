@@ -1,204 +1,185 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
-<title>Bloodline: Ashaterra</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Bloodline: Ashaterra</title>
 
-<style>
-  /* Reset & base */
-  * {
-    margin: 0; padding: 0; box-sizing: border-box;
-    font-family: 'Roboto Slab', serif;
-  }
+  <!-- Font + Firebase -->
+  <link href="https://fonts.googleapis.com/css2?family=Roboto+Slab:wght@400;700&display=swap" rel="stylesheet" />
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
 
-  body, html {
-    height: 100%;
-    background-color: #0b0c10;
-    color: #c5c6c7;
-    overflow: hidden;
-  }
-
-  .screen {
-    display: none;
-    height: 100vh;
-    width: 100vw;
-    position: relative;
-    text-align: center;
-    background: #1f2833;
-    color: #c5c6c7;
-    padding: 20px;
-  }
-
-  .screen.active {
-    display: block;
-  }
-
-  .bg-image {
-    position: absolute;
-    top: 0; left: 0;
-    width: 100vw;
-    height: 100vh;
-    object-fit: cover;
-    filter: brightness(0.4) blur(1.2px);
-    z-index: -1;
-  }
-
-  .logo {
-    font-size: 3rem;
-    font-weight: 700;
-    margin-top: 35vh;
-    color: #66fcf1;
-    text-shadow: 0 0 10px #45a29e;
-    animation: glow 2.5s ease-in-out infinite alternate;
-  }
-
-  @keyframes glow {
-    from {
-      text-shadow: 0 0 10px #45a29e, 0 0 20px #45a29e, 0 0 30px #66fcf1;
+  <style>
+    * {
+      margin: 0; padding: 0; box-sizing: border-box;
+      font-family: 'Roboto Slab', serif;
     }
-    to {
-      text-shadow: 0 0 20px #66fcf1, 0 0 30px #45a29e, 0 0 40px #66fcf1;
+
+    body, html {
+      height: 100%;
+      background-color: #0c0f12;
+      overflow: hidden;
+      color: #f8f8f8;
     }
-  }
 
-  .loading-bar {
-    width: 60vw;
-    height: 8px;
-    background-color: #45a29e44;
-    margin: 30px auto;
-    border-radius: 4px;
-    overflow: hidden;
-  }
+    .screen {
+      display: none;
+      height: 100vh;
+      width: 100vw;
+      position: absolute;
+      top: 0; left: 0;
+      padding: 20px;
+      background: #0c0f12;
+    }
 
-  .progress {
-    width: 0%;
-    height: 100%;
-    background: linear-gradient(90deg, #45a29e, #66fcf1);
-    animation: loading 3s forwards;
-  }
+    .screen.active {
+      display: block;
+    }
 
-  @keyframes loading {
-    to {
+    .bg-image {
+      position: absolute;
+      top: 0; left: 0;
       width: 100%;
+      height: 100%;
+      object-fit: cover;
+      filter: brightness(0.3) blur(2px);
+      z-index: -1;
     }
-  }
 
-  h1 {
-    margin-bottom: 25px;
-    font-weight: 600;
-    color: #66fcf1;
-    text-shadow: 0 0 7px #45a29e;
-  }
+    .logo {
+      font-size: 2.8rem;
+      text-align: center;
+      color: #fdf5c0;
+      margin-top: 30vh;
+      text-shadow: 0 0 10px #c89d47;
+      animation: fadeIn 2s ease-in-out forwards;
+    }
 
-  .btn {
-    display: inline-block;
-    padding: 15px 40px;
-    margin: 12px;
-    font-size: 1.1rem;
-    font-weight: 600;
-    border-radius: 35px;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    user-select: none;
-    box-shadow: 0 0 10px #45a29e55;
-    border: none;
-  }
+    .loading-bar {
+      width: 60%;
+      height: 8px;
+      margin: 30px auto;
+      border-radius: 6px;
+      background-color: #c89d4777;
+      overflow: hidden;
+    }
 
-  .btn.primary {
-    background-color: #45a29e;
-    color: #0b0c10;
-  }
+    .progress {
+      width: 0%;
+      height: 100%;
+      background: linear-gradient(to right, #c89d47, #fdf5c0);
+      animation: loading 3s forwards;
+    }
 
-  .btn.primary:hover {
-    background-color: #66fcf1;
-    box-shadow: 0 0 20px #66fcf1aa;
-  }
+    @keyframes loading {
+      to { width: 100%; }
+    }
 
-  .btn.secondary {
-    background-color: transparent;
-    color: #66fcf1;
-    border: 2px solid #66fcf1;
-  }
+    @keyframes fadeIn {
+      0% { opacity: 0; transform: scale(0.95); }
+      100% { opacity: 1; transform: scale(1); }
+    }
 
-  .btn.secondary:hover {
-    background-color: #66fcf1;
-    color: #0b0c10;
-  }
+    form {
+      max-width: 350px;
+      margin: 20px auto;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
 
-  .message {
-    margin-top: 15px;
-    color: #ff6f61;
-    font-weight: 700;
-    min-height: 24px;
-    transition: opacity 0.3s ease;
-    opacity: 0;
-  }
+    input {
+      padding: 12px;
+      border: none;
+      border-radius: 6px;
+      font-size: 1rem;
+    }
 
-  .message.show {
-    opacity: 1;
-  }
-</style>
+    button {
+      padding: 12px;
+      border: none;
+      border-radius: 6px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
 
-<!-- Google Font -->
-<link href="https://fonts.googleapis.com/css2?family=Roboto+Slab:wght@400;700&display=swap" rel="stylesheet" />
+    .btn-primary {
+      background-color: #c89d47;
+      color: #1a1a1a;
+    }
 
-<!-- Firebase SDK -->
-<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
+    .btn-primary:hover {
+      background-color: #fdf5c0;
+    }
 
+    .btn-secondary {
+      background: none;
+      border: 2px solid #c89d47;
+      color: #c89d47;
+    }
+
+    .btn-secondary:hover {
+      background-color: #c89d47;
+      color: #1a1a1a;
+    }
+
+    .link {
+      color: #fdf5c0;
+      cursor: pointer;
+      font-size: 0.9rem;
+      text-align: right;
+    }
+
+    .message {
+      text-align: center;
+      font-weight: bold;
+      color: #ff6f61;
+      min-height: 24px;
+    }
+
+    .section-title {
+      font-size: 1.5rem;
+      margin: 20px 0 10px;
+      text-align: center;
+      color: #fdf5c0;
+    }
+  </style>
 </head>
+
 <body>
 
-<!-- Splash Screen -->
 <div id="splash-screen" class="screen active">
-  <img src="assets/bg-ashaterra.jpg" alt="Ashaterra Background" class="bg-image" />
+  <img src="assets/bg-ashaterra.jpg" alt="Splash Background" class="bg-image" />
   <div class="logo">Bloodline: Ashaterra</div>
   <div class="loading-bar"><div class="progress"></div></div>
 </div>
 
-<!-- Login Screen -->
 <div id="login-screen" class="screen">
-  <h1>Login to Bloodline: Ashaterra</h1>
-  <button id="google-login-btn" class="btn primary">Login with Google</button>
-  <button id="guest-login-btn" class="btn secondary">Play as Guest</button>
-  <div id="login-message" class="message"></div>
+  <div class="section-title">Login to Ashaterra</div>
+
+  <form id="login-form">
+    <input type="email" id="email" placeholder="Email" required />
+    <input type="password" id="password" placeholder="Password" required />
+    <div class="link" onclick="resetPassword()">Forgot Password?</div>
+    <button type="submit" class="btn-primary">Login</button>
+    <button type="button" class="btn-secondary" onclick="showRegister()">Register</button>
+    <button type="button" class="btn-secondary" onclick="googleLogin()">Login with Google</button>
+    <button type="button" class="btn-secondary" onclick="guestLogin()">Play as Guest</button>
+  </form>
+
+  <div class="message" id="message"></div>
 </div>
 
 <script>
-  // Core system
-  const Core = (() => {
-    const splashScreen = document.getElementById("splash-screen");
-    const loginScreen = document.getElementById("login-screen");
-    const loginMessage = document.getElementById("login-message");
+  // Splash screen transition
+  setTimeout(() => {
+    document.getElementById("splash-screen").classList.remove("active");
+    document.getElementById("login-screen").classList.add("active");
+  }, 3500);
 
-    const showSplashThenLogin = () => {
-      splashScreen.classList.add("active");
-      loginScreen.classList.remove("active");
-      setTimeout(() => {
-        splashScreen.classList.remove("active");
-        loginScreen.classList.add("active");
-      }, 3200);
-    };
-
-    const showMessage = (msg, duration = 3000) => {
-      loginMessage.textContent = msg;
-      loginMessage.classList.add("show");
-      setTimeout(() => loginMessage.classList.remove("show"), duration);
-    };
-
-    const init = () => {
-      showSplashThenLogin();
-    };
-
-    return {
-      init,
-      showMessage,
-    };
-  })();
-
-  // Firebase config and auth
+  // Firebase Config
   const firebaseConfig = {
     apiKey: "AIzaSyAstsRmnykZJlueSMdJMPYEs1l-udFWWT0",
     authDomain: "bloodline-ashaterra.firebaseapp.com",
@@ -212,52 +193,71 @@
   firebase.initializeApp(firebaseConfig);
   const auth = firebase.auth();
 
-  // Elements
-  const googleLoginBtn = document.getElementById("google-login-btn");
-  const guestLoginBtn = document.getElementById("guest-login-btn");
-  const loginMessage = document.getElementById("login-message");
+  const msg = document.getElementById("message");
 
-  googleLoginBtn.addEventListener("click", () => {
-    Core.showMessage("Logging in with Google...");
+  // Login
+  document.getElementById("login-form").addEventListener("submit", e => {
+    e.preventDefault();
+    const email = emailInput.value;
+    const password = passwordInput.value;
+
+    auth.signInWithEmailAndPassword(email, password)
+      .then(() => {
+        msg.innerText = "Login successful!";
+        // TODO: redirect to game.html
+      })
+      .catch(err => {
+        msg.innerText = err.message;
+      });
+  });
+
+  // Google login
+  function googleLogin() {
     const provider = new firebase.auth.GoogleAuthProvider();
     auth.signInWithPopup(provider)
-      .then(result => {
-        Core.showMessage(`Welcome, ${result.user.displayName}`, 4000);
-        // TODO: lanjut ke game utama
-        setTimeout(() => {
-          alert("Game akan segera dikembangkan lanjut setelah login.");
-        }, 1000);
-      })
-      .catch(error => {
-        Core.showMessage("Google login failed: " + error.message);
-      });
-  });
+      .then(() => msg.innerText = "Google login success!")
+      .catch(err => msg.innerText = err.message);
+  }
 
-  guestLoginBtn.addEventListener("click", () => {
-    Core.showMessage("Logging in as Guest...");
+  // Guest login
+  function guestLogin() {
     auth.signInAnonymously()
-      .then(() => {
-        Core.showMessage("Guest login successful", 3000);
-        // TODO: lanjut ke game utama
-        setTimeout(() => {
-          alert("Game akan segera dikembangkan lanjut setelah login.");
-        }, 1000);
-      })
-      .catch(error => {
-        Core.showMessage("Guest login failed: " + error.message);
-      });
-  });
+      .then(() => msg.innerText = "Guest login success!")
+      .catch(err => msg.innerText = err.message);
+  }
 
+  // Reset password
+  function resetPassword() {
+    const email = document.getElementById("email").value;
+    if (!email) {
+      msg.innerText = "Enter your email first.";
+      return;
+    }
+
+    auth.sendPasswordResetEmail(email)
+      .then(() => msg.innerText = "Reset link sent to your email.")
+      .catch(err => msg.innerText = err.message);
+  }
+
+  // Register
+  function showRegister() {
+    const email = prompt("Enter your email:");
+    const pass = prompt("Enter your password (min 6 chars):");
+    if (email && pass) {
+      auth.createUserWithEmailAndPassword(email, pass)
+        .then(() => msg.innerText = "Account registered!")
+        .catch(err => msg.innerText = err.message);
+    }
+  }
+
+  const emailInput = document.getElementById("email");
+  const passwordInput = document.getElementById("password");
+
+  // Auto login check
   auth.onAuthStateChanged(user => {
     if (user) {
-      console.log("User logged in:", user.uid);
-    } else {
-      console.log("No user logged in");
+      console.log("Logged in:", user.uid);
     }
-  });
-
-  window.addEventListener("DOMContentLoaded", () => {
-    Core.init();
   });
 </script>
 
