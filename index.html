@@ -51,6 +51,7 @@
       font-size: 2.8rem;
       opacity: 0;
       animation: fadeInUp 2s ease-in-out 1s forwards;
+      text-align: center;
     }
 
     .loading-bar {
@@ -70,8 +71,9 @@
     }
 
     .auth-container {
-      position: absolute;
-      top: 50%; left: 50%;
+      position: fixed;
+      top: 50%;
+      left: 50%;
       transform: translate(-50%, -50%);
       background: var(--glass);
       backdrop-filter: blur(20px);
@@ -79,20 +81,24 @@
       border-radius: 20px;
       width: 90%;
       max-width: 400px;
-      display: none;
+      display: flex;
       flex-direction: column;
       align-items: center;
-      animation: fadeIn 1.5s ease 4.6s forwards;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 1s ease;
     }
 
     .auth-container.show {
-      display: flex;
+      opacity: 1;
+      pointer-events: auto;
     }
 
     h2 {
       color: var(--gold);
       margin-bottom: 20px;
       font-size: 1.8rem;
+      text-align: center;
     }
 
     input {
@@ -146,10 +152,6 @@
       cursor: pointer;
     }
 
-    .message {
-      font-weight: 500;
-    }
-
     .error { color: var(--error); }
     .success { color: var(--success); }
 
@@ -168,11 +170,6 @@
         visibility: hidden;
         pointer-events: none;
       }
-    }
-
-    @keyframes fadeIn {
-      from { opacity: 0; transform: scale(0.96); }
-      to { opacity: 1; transform: scale(1); }
     }
   </style>
 </head>
@@ -211,9 +208,9 @@
     const splash = document.getElementById("splash");
     const authContainer = document.getElementById("auth");
 
-    splash.addEventListener("animationend", () => {
+    setTimeout(() => {
       authContainer.classList.add("show");
-    });
+    }, 4700); // Setelah animasi splash selesai
 
     const formTitle = document.getElementById("form-title");
     const emailInput = document.getElementById("email");
