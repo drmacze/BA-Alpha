@@ -2,309 +2,206 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Bloodline: Ashaterra</title>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet"/>
-  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
+  <title>Bloodline: Ashaterra - Login</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
-    :root {
-      --maroon-dark: #1b0b0c;
-      --maroon: #4a1a1f;
-      --gold: #d4af7f;
-      --glass: rgba(255, 255, 255, 0.06);
-      --text: #f0f0f0;
-      --error: #ff6b6b;
-      --success: #8fffda;
-    }
-
     * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-      font-family: 'Inter', sans-serif;
+      margin: 0; padding: 0; box-sizing: border-box;
+      font-family: 'Segoe UI', sans-serif;
     }
-
     body {
-      background: url('assets/bg-ashaterra.jpg') no-repeat center center/cover;
-      background-color: var(--maroon-dark);
+      background: linear-gradient(to bottom, #1a0d0d, #330000);
+      color: #fff;
       height: 100vh;
-      overflow: hidden;
-    }
-
-    .splash {
-      position: fixed;
-      top: 0; left: 0;
-      width: 100%; height: 100%;
-      background: rgba(0, 0, 0, 0.85);
-      backdrop-filter: blur(8px);
-      z-index: 1000;
       display: flex;
-      flex-direction: column;
-      justify-content: center;
       align-items: center;
-      animation: fadeOut 2s ease 4.5s forwards;
-    }
-
-    .splash h1 {
-      color: var(--gold);
-      font-size: 2.8rem;
-      opacity: 0;
-      animation: fadeInUp 2s ease-in-out 1s forwards;
-      text-align: center;
-    }
-
-    .loading-bar {
-      width: 60%;
-      height: 6px;
-      background: rgba(255,255,255,0.2);
-      margin-top: 20px;
-      border-radius: 10px;
+      justify-content: center;
+      position: relative;
       overflow: hidden;
     }
-
-    .progress {
-      height: 100%;
-      width: 0%;
-      background: linear-gradient(to right, var(--gold), #fff0c4);
-      animation: progress 3.5s ease forwards;
-    }
-
-    .auth-container {
-      position: fixed;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      background: var(--glass);
-      backdrop-filter: blur(20px);
-      padding: 40px;
-      border-radius: 20px;
+    .container {
+      background: rgba(0, 0, 0, 0.6);
+      padding: 30px 25px;
+      border-radius: 12px;
       width: 90%;
       max-width: 400px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      opacity: 0;
-      pointer-events: none;
-      transition: opacity 1s ease;
+      backdrop-filter: blur(10px);
+      box-shadow: 0 0 25px rgba(255, 0, 0, 0.2);
+      position: relative;
     }
-
-    .auth-container.show {
-      opacity: 1;
-      pointer-events: auto;
-    }
-
-    h2 {
-      color: var(--gold);
-      margin-bottom: 20px;
-      font-size: 1.8rem;
+    .container h2 {
       text-align: center;
+      margin-bottom: 20px;
+      color: #ffcb77;
     }
-
-    input {
+    input, select {
       width: 100%;
+      margin: 8px 0;
       padding: 12px;
-      margin-bottom: 14px;
+      border-radius: 6px;
       border: none;
-      border-radius: 8px;
-      background: rgba(255,255,255,0.07);
-      color: var(--text);
+      background: #111;
+      color: #fff;
     }
-
-    input::placeholder {
-      color: #aaa;
-    }
-
     button {
       width: 100%;
       padding: 12px;
-      margin-bottom: 10px;
-      background: var(--gold);
+      margin-top: 10px;
+      background: linear-gradient(to right, #e63946, #f1faee);
+      border: none;
       color: #000;
       font-weight: bold;
-      border: none;
       border-radius: 8px;
       cursor: pointer;
-      transition: all 0.3s ease;
+      transition: 0.3s;
     }
-
     button:hover {
-      background: #f1c17d;
-      transform: scale(1.03);
+      filter: brightness(1.2);
     }
-
-    .btn-outline {
-      background: transparent;
-      color: var(--gold);
-      border: 1px solid var(--gold);
-    }
-
-    .btn-outline:hover {
-      background: var(--gold);
-      color: #000;
-    }
-
-    .link, .message {
+    .toggle {
+      text-align: center;
+      margin-top: 12px;
+      cursor: pointer;
       color: #ccc;
       font-size: 0.9rem;
-      text-align: center;
-      margin-top: 8px;
-      cursor: pointer;
     }
-
-    .error { color: var(--error); }
-    .success { color: var(--success); }
-
-    @keyframes fadeInUp {
-      from { opacity: 0; transform: translateY(40px); }
-      to { opacity: 1; transform: translateY(0); }
+    .toast {
+      position: fixed;
+      top: 15px;
+      right: 15px;
+      background: #222;
+      padding: 10px 18px;
+      color: #fff;
+      border-radius: 8px;
+      font-size: 0.9rem;
+      opacity: 0;
+      transition: 0.5s;
+      z-index: 99;
     }
-
-    @keyframes progress {
-      to { width: 100%; }
+    .toast.show {
+      opacity: 1;
     }
-
-    @keyframes fadeOut {
-      to {
-        opacity: 0;
-        visibility: hidden;
-        pointer-events: none;
-      }
+    .footer {
+      position: absolute;
+      bottom: 10px;
+      right: 12px;
+      font-size: 0.75rem;
+      color: #bbb;
+    }
+    .rgb-line {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      height: 5px;
+      background: linear-gradient(90deg, red, orange, yellow, green, cyan, blue, violet);
+      animation: rgb 4s linear infinite;
+    }
+    @keyframes rgb {
+      0% { filter: hue-rotate(0deg); }
+      100% { filter: hue-rotate(360deg); }
     }
   </style>
 </head>
 <body>
 
-  <div class="splash" id="splash">
-    <h1>Bloodline: Ashaterra</h1>
-    <div class="loading-bar"><div class="progress"></div></div>
-  </div>
+<div class="container">
+  <h2 id="form-title">Login</h2>
+  <input id="username" placeholder="Username" />
+  <input id="email" type="email" placeholder="Email" />
+  <input id="password" type="password" placeholder="Password" />
+  <input id="pin" type="number" placeholder="6-digit PIN" />
+  <input id="dob" type="date" />
+  <select id="country">
+    <option value="">Select Country</option>
+    <option value="Indonesia">Indonesia</option>
+    <option value="USA">USA</option>
+    <option value="Japan">Japan</option>
+    <option value="Other">Other</option>
+  </select>
+  <input id="captcha" placeholder="Enter code: 7G4K" />
+  <button onclick="submitForm()">Login</button>
+  <div class="toggle" onclick="toggleMode()">Don't have an account? Register</div>
+</div>
 
-  <div class="auth-container" id="auth">
-    <h2 id="form-title">Login</h2>
-    <input type="email" id="email" placeholder="Email"/>
-    <input type="password" id="password" placeholder="Password"/>
-    <button id="action-btn">Login</button>
-    <div class="link" id="toggle-link">Don't have an account? Register</div>
-    <div class="link" id="forgot-link">Forgot Password?</div>
-    <button class="btn-outline" id="google-btn">Login with Google</button>
-    <button class="btn-outline" id="guest-btn">Continue as Guest</button>
-    <div class="message"><span id="error" class="error"></span><span id="success" class="success"></span></div>
-  </div>
+<div class="toast" id="toast"></div>
+<div class="footer" id="footer">ID: - | v3.0</div>
+<div class="rgb-line"></div>
 
-  <script>
-    const firebaseConfig = {
-      apiKey: "AIzaSyAstsRmnykZJlueSMdJMPYEs1l-udFWWT0",
-      authDomain: "bloodline-ashaterra.firebaseapp.com",
-      projectId: "bloodline-ashaterra",
-      storageBucket: "bloodline-ashaterra.appspot.com",
-      messagingSenderId: "925417667104",
-      appId: "1:925417667104:web:e2ccafa1629333ef789a45",
-      measurementId: "G-E8JV3WYFXV"
-    };
-    firebase.initializeApp(firebaseConfig);
-    const auth = firebase.auth();
+<audio id="clickSound" src="https://cdn.pixabay.com/download/audio/2022/03/15/audio_23716337fc.mp3?filename=click-button-140881.mp3"></audio>
 
-    const splash = document.getElementById("splash");
-    const authContainer = document.getElementById("auth");
+<script>
+  let isLogin = true;
+  const toast = document.getElementById("toast");
+  const footer = document.getElementById("footer");
 
-    setTimeout(() => {
-      authContainer.classList.add("show");
-    }, 4700); // Setelah animasi splash selesai
+  function playClick() {
+    document.getElementById("clickSound").play();
+    if (navigator.vibrate) navigator.vibrate([10, 30]);
+  }
 
-    const formTitle = document.getElementById("form-title");
-    const emailInput = document.getElementById("email");
-    const passwordInput = document.getElementById("password");
-    const actionButton = document.getElementById("action-btn");
-    const toggleLink = document.getElementById("toggle-link");
-    const forgotLink = document.getElementById("forgot-link");
-    const googleBtn = document.getElementById("google-btn");
-    const guestBtn = document.getElementById("guest-btn");
-    const errorMsg = document.getElementById("error");
-    const successMsg = document.getElementById("success");
+  function toggleMode() {
+    isLogin = !isLogin;
+    document.getElementById("form-title").innerText = isLogin ? "Login" : "Register";
+    document.querySelector("button").innerText = isLogin ? "Login" : "Register";
+    document.querySelector(".toggle").innerText = isLogin ? "Don't have an account? Register" : "Already have an account? Login";
+    playClick();
+  }
 
-    let isLogin = true;
+  function showToast(message, success = false) {
+    toast.innerText = message;
+    toast.style.background = success ? "#2ecc71" : "#e74c3c";
+    toast.classList.add("show");
+    setTimeout(() => toast.classList.remove("show"), 3000);
+  }
 
-    function haptic() {
-      if (navigator.vibrate) navigator.vibrate(30);
+  function submitForm() {
+    playClick();
+    const email = emailInput.value.trim();
+    const pass = passwordInput.value.trim();
+    const uname = usernameInput.value.trim();
+    const pin = pinInput.value.trim();
+    const dob = dobInput.value;
+    const country = countryInput.value;
+    const captcha = captchaInput.value.trim();
+
+    if (!email || !pass || !uname || !pin || !dob || !country || !captcha) {
+      showToast("Please fill all fields.");
+      return;
     }
 
-    function toggleForm() {
-      isLogin = !isLogin;
-      formTitle.textContent = isLogin ? "Login" : "Register";
-      actionButton.textContent = isLogin ? "Login" : "Register";
-      toggleLink.textContent = isLogin ? "Don't have an account? Register" : "Already have an account? Login";
-      errorMsg.textContent = "";
-      successMsg.textContent = "";
-      haptic();
+    if (captcha !== "7G4K") {
+      showToast("Invalid captcha.");
+      return;
     }
 
-    function showMessage(msg, type = 'error') {
-      errorMsg.textContent = "";
-      successMsg.textContent = "";
-      if (type === 'error') {
-        errorMsg.textContent = msg;
-        if (navigator.vibrate) navigator.vibrate([50, 30, 50]);
-      } else {
-        successMsg.textContent = msg;
-        haptic();
+    if (!isLogin) {
+      const exist = localStorage.getItem("user_" + email);
+      if (exist) return showToast("Email already used.");
+      const id = "ID-" + Math.floor(Math.random() * 999999);
+      const userData = { uname, pass, pin, dob, country, id };
+      localStorage.setItem("user_" + email, JSON.stringify(userData));
+      footer.innerText = `ID: ${id} | v3.0`;
+      showToast("Account created!", true);
+    } else {
+      const user = JSON.parse(localStorage.getItem("user_" + email));
+      if (!user || user.pass !== pass || user.pin !== pin) {
+        showToast("Invalid credentials.");
+        return;
       }
+      footer.innerText = `ID: ${user.id} | v3.0`;
+      showToast("Welcome, " + user.uname + "!", true);
     }
+  }
 
-    function login() {
-      haptic();
-      const email = emailInput.value.trim();
-      const pass = passwordInput.value.trim();
-      if (!email || !pass) return showMessage("Please fill all fields.");
+  const emailInput = document.getElementById("email");
+  const passwordInput = document.getElementById("password");
+  const usernameInput = document.getElementById("username");
+  const pinInput = document.getElementById("pin");
+  const dobInput = document.getElementById("dob");
+  const countryInput = document.getElementById("country");
+  const captchaInput = document.getElementById("captcha");
+</script>
 
-      if (isLogin) {
-        auth.signInWithEmailAndPassword(email, pass)
-          .then(() => showMessage("Login successful!", "success"))
-          .catch(err => showMessage(err.message));
-      } else {
-        if (pass.length < 6) return showMessage("Password must be at least 6 characters.");
-        auth.createUserWithEmailAndPassword(email, pass)
-          .then(() => showMessage("Account created!", "success"))
-          .catch(err => showMessage(err.message));
-      }
-    }
-
-    function forgotPassword() {
-      haptic();
-      const email = emailInput.value.trim();
-      if (!email) return showMessage("Enter your email to reset password.");
-      auth.sendPasswordResetEmail(email)
-        .then(() => showMessage("Reset link sent to your email.", "success"))
-        .catch(err => showMessage(err.message));
-    }
-
-    function googleLogin() {
-      haptic();
-      const provider = new firebase.auth.GoogleAuthProvider();
-      auth.signInWithPopup(provider)
-        .then(() => showMessage("Google login successful!", "success"))
-        .catch(err => showMessage(err.message));
-    }
-
-    function guestLogin() {
-      haptic();
-      auth.signInAnonymously()
-        .then(() => showMessage("Logged in as guest.", "success"))
-        .catch(err => showMessage(err.message));
-    }
-
-    actionButton.addEventListener("click", login);
-    toggleLink.addEventListener("click", toggleForm);
-    forgotLink.addEventListener("click", forgotPassword);
-    googleBtn.addEventListener("click", googleLogin);
-    guestBtn.addEventListener("click", guestLogin);
-
-    auth.onAuthStateChanged(user => {
-      if (user) {
-        console.log("User logged in:", user.uid);
-        // TODO: redirect ke halaman utama game
-      }
-    });
-  </script>
 </body>
 </html>
