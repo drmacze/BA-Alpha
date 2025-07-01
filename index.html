@@ -9,80 +9,67 @@
   <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
   <style>
     :root {
-      --primary: #d4af7f;
+      --maroon-dark: #1b0b0c;
+      --maroon: #4a1a1f;
+      --gold: #d4af7f;
+      --glass: rgba(255, 255, 255, 0.06);
       --text: #f0f0f0;
-      --bg: #0c0c0f;
-      --glass: rgba(255,255,255,0.06);
       --error: #ff6b6b;
       --success: #8fffda;
     }
 
     * {
-      margin: 0; padding: 0; box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
       font-family: 'Inter', sans-serif;
     }
 
     body {
-      background: url('assets/bg-ashaterra.jpg') no-repeat center center / cover;
+      background: url('assets/bg-ashaterra.jpg') no-repeat center center/cover;
+      background-color: var(--maroon-dark);
       height: 100vh;
       overflow: hidden;
     }
 
     .splash {
-      position: fixed; top: 0; left: 0;
+      position: fixed;
+      top: 0; left: 0;
       width: 100%; height: 100%;
-      background: rgba(0,0,0,0.7);
-      backdrop-filter: blur(6px);
+      background: rgba(0, 0, 0, 0.85);
+      backdrop-filter: blur(8px);
+      z-index: 1000;
       display: flex;
       flex-direction: column;
-      align-items: center;
       justify-content: center;
-      z-index: 9999;
-      animation: fadeOut 2s ease-out 4s forwards;
+      align-items: center;
+      animation: fadeOut 2s ease 4.5s forwards;
     }
 
     .splash h1 {
-      color: var(--primary);
-      font-size: 2.6rem;
-      text-shadow: 0 0 10px #000;
+      color: var(--gold);
+      font-size: 2.8rem;
       opacity: 0;
-      animation: fadeInUp 2s ease-in-out forwards;
+      animation: fadeInUp 2s ease-in-out 1s forwards;
     }
 
     .loading-bar {
-      width: 60%; height: 6px;
+      width: 60%;
+      height: 6px;
       background: rgba(255,255,255,0.2);
+      margin-top: 20px;
       border-radius: 10px;
       overflow: hidden;
-      margin-top: 20px;
     }
 
     .progress {
       height: 100%;
       width: 0%;
-      background: linear-gradient(to right, #c8a254, #fff0c4);
+      background: linear-gradient(to right, var(--gold), #fff0c4);
       animation: progress 3.5s ease forwards;
     }
 
-    @keyframes fadeInUp {
-      from { opacity: 0; transform: translateY(40px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-
-    @keyframes progress {
-      to { width: 100%; }
-    }
-
-    @keyframes fadeOut {
-      to {
-        opacity: 0;
-        visibility: hidden;
-        pointer-events: none;
-      }
-    }
-
     .auth-container {
-      display: none;
       position: absolute;
       top: 50%; left: 50%;
       transform: translate(-50%, -50%);
@@ -92,18 +79,20 @@
       border-radius: 20px;
       width: 90%;
       max-width: 400px;
-      animation: fadeIn 1.4s ease 4s forwards;
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      animation: fadeIn 1.5s ease 4.6s forwards;
     }
 
     .auth-container.show {
       display: flex;
-      flex-direction: column;
-      align-items: center;
     }
 
     h2 {
-      color: var(--primary);
+      color: var(--gold);
       margin-bottom: 20px;
+      font-size: 1.8rem;
     }
 
     input {
@@ -123,56 +112,72 @@
     button {
       width: 100%;
       padding: 12px;
-      background: var(--primary);
+      margin-bottom: 10px;
+      background: var(--gold);
       color: #000;
-      font-weight: 600;
+      font-weight: bold;
       border: none;
       border-radius: 8px;
-      margin-bottom: 10px;
       cursor: pointer;
       transition: all 0.3s ease;
     }
 
     button:hover {
       background: #f1c17d;
-      transform: scale(1.02);
+      transform: scale(1.03);
     }
 
     .btn-outline {
       background: transparent;
-      color: var(--primary);
-      border: 1px solid var(--primary);
+      color: var(--gold);
+      border: 1px solid var(--gold);
     }
 
     .btn-outline:hover {
-      background: var(--primary);
+      background: var(--gold);
       color: #000;
     }
 
     .link, .message {
-      color: #bbb;
+      color: #ccc;
       font-size: 0.9rem;
-      margin-top: 5px;
       text-align: center;
+      margin-top: 8px;
       cursor: pointer;
     }
 
     .message {
-      margin-top: 10px;
       font-weight: 500;
     }
 
     .error { color: var(--error); }
     .success { color: var(--success); }
 
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(40px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes progress {
+      to { width: 100%; }
+    }
+
+    @keyframes fadeOut {
+      to {
+        opacity: 0;
+        visibility: hidden;
+        pointer-events: none;
+      }
+    }
+
     @keyframes fadeIn {
-      from { opacity: 0; transform: scale(0.95); }
+      from { opacity: 0; transform: scale(0.96); }
       to { opacity: 1; transform: scale(1); }
     }
   </style>
 </head>
-
 <body>
+
   <div class="splash" id="splash">
     <h1>Bloodline: Ashaterra</h1>
     <div class="loading-bar"><div class="progress"></div></div>
@@ -180,8 +185,8 @@
 
   <div class="auth-container" id="auth">
     <h2 id="form-title">Login</h2>
-    <input type="email" id="email" placeholder="Email" />
-    <input type="password" id="password" placeholder="Password" />
+    <input type="email" id="email" placeholder="Email"/>
+    <input type="password" id="password" placeholder="Password"/>
     <button id="action-btn">Login</button>
     <div class="link" id="toggle-link">Don't have an account? Register</div>
     <div class="link" id="forgot-link">Forgot Password?</div>
@@ -223,6 +228,10 @@
 
     let isLogin = true;
 
+    function haptic() {
+      if (navigator.vibrate) navigator.vibrate(30);
+    }
+
     function toggleForm() {
       isLogin = !isLogin;
       formTitle.textContent = isLogin ? "Login" : "Register";
@@ -230,16 +239,23 @@
       toggleLink.textContent = isLogin ? "Don't have an account? Register" : "Already have an account? Login";
       errorMsg.textContent = "";
       successMsg.textContent = "";
+      haptic();
     }
 
     function showMessage(msg, type = 'error') {
       errorMsg.textContent = "";
       successMsg.textContent = "";
-      if (type === 'error') errorMsg.textContent = msg;
-      else successMsg.textContent = msg;
+      if (type === 'error') {
+        errorMsg.textContent = msg;
+        if (navigator.vibrate) navigator.vibrate([50, 30, 50]);
+      } else {
+        successMsg.textContent = msg;
+        haptic();
+      }
     }
 
     function login() {
+      haptic();
       const email = emailInput.value.trim();
       const pass = passwordInput.value.trim();
       if (!email || !pass) return showMessage("Please fill all fields.");
@@ -257,6 +273,7 @@
     }
 
     function forgotPassword() {
+      haptic();
       const email = emailInput.value.trim();
       if (!email) return showMessage("Enter your email to reset password.");
       auth.sendPasswordResetEmail(email)
@@ -265,6 +282,7 @@
     }
 
     function googleLogin() {
+      haptic();
       const provider = new firebase.auth.GoogleAuthProvider();
       auth.signInWithPopup(provider)
         .then(() => showMessage("Google login successful!", "success"))
@@ -272,6 +290,7 @@
     }
 
     function guestLogin() {
+      haptic();
       auth.signInAnonymously()
         .then(() => showMessage("Logged in as guest.", "success"))
         .catch(err => showMessage(err.message));
@@ -286,7 +305,7 @@
     auth.onAuthStateChanged(user => {
       if (user) {
         console.log("User logged in:", user.uid);
-        // TODO: redirect to game.html
+        // TODO: redirect ke halaman utama game
       }
     });
   </script>
