@@ -2,184 +2,188 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Bloodline: Ashaterra</title>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap" rel="stylesheet">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
-    :root {
-      --maroon-dark: #1b0d0f;
-      --gold: #d4af7f;
-      --glass: rgba(255, 255, 255, 0.05);
-      --text: #eee;
-      --error: #ff7b7b;
-      --success: #8fffcd;
-    }
-
     * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-      font-family: 'Inter', sans-serif;
+      margin: 0; padding: 0; box-sizing: border-box;
+      font-family: 'Segoe UI', sans-serif;
     }
-
     body {
-      background: url('assets/bg-ashaterra.jpg') no-repeat center center/cover;
-      background-color: var(--maroon-dark);
+      background: url('https://images.unsplash.com/photo-1549887534-3c8f0f7d9a3c?auto=format&fit=crop&w=1280&q=80') center center / cover no-repeat;
       height: 100vh;
-      display: flex;
-      align-items: center;
-      justify-content: center;
+      overflow: hidden;
+      position: relative;
     }
-
-    .auth-box {
-      background: var(--glass);
-      backdrop-filter: blur(16px);
-      padding: 30px;
-      border-radius: 18px;
+    .overlay {
+      position: absolute;
+      width: 100%; height: 100%;
+      background: rgba(0, 0, 0, 0.6);
+      backdrop-filter: blur(6px);
+      z-index: 1;
+    }
+    .container {
+      position: relative;
+      z-index: 2;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      color: #fff;
+      text-align: center;
+      animation: fadeIn 1.5s ease-in-out;
+    }
+    .logo {
+      width: 150px;
+      margin-bottom: 10px;
+      filter: drop-shadow(0 0 15px #d4af7f);
+      animation: logoPulse 2s infinite;
+    }
+    h1 {
+      font-size: 2rem;
+      color: #f1d7a7;
+    }
+    .start-btn, .auth-btn {
+      margin-top: 25px;
+      padding: 12px 25px;
+      background: transparent;
+      border: 2px solid #fff;
+      color: #fff;
+      font-size: 1rem;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: 0.3s;
+      animation: pulse 2s infinite;
+    }
+    .start-btn:hover, .auth-btn:hover {
+      background: rgba(255, 255, 255, 0.15);
+    }
+    .form-box {
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+      margin-top: 30px;
       width: 90%;
       max-width: 360px;
-      box-shadow: 0 0 12px rgba(0,0,0,0.4);
-      text-align: center;
-      animation: fadeIn 1s ease;
     }
-
-    h2 {
-      color: var(--gold);
-      margin-bottom: 20px;
-      font-size: 1.6rem;
-    }
-
     input {
       width: 100%;
       padding: 12px;
-      margin-bottom: 12px;
+      border-radius: 5px;
       border: none;
-      border-radius: 10px;
-      background: rgba(255,255,255,0.07);
-      color: var(--text);
+      outline: none;
     }
-
-    input::placeholder {
-      color: #aaa;
+    .info {
+      font-size: 0.8rem;
+      opacity: 0.7;
     }
-
-    button {
-      width: 100%;
-      padding: 12px;
-      background: var(--gold);
-      color: #000;
-      font-weight: bold;
-      border: none;
-      border-radius: 10px;
+    .toggle {
+      margin-top: 15px;
+      font-size: 0.85rem;
+      text-decoration: underline;
       cursor: pointer;
-      transition: all 0.3s ease;
-      margin-top: 5px;
     }
-
-    button:hover {
-      background: #f1c17f;
-      transform: scale(1.02);
-    }
-
-    .switch {
+    .bottom-info {
+      position: absolute;
+      bottom: 10px;
+      right: 12px;
+      font-size: 0.75rem;
       color: #ccc;
-      font-size: 0.9rem;
-      margin-top: 12px;
-      cursor: pointer;
     }
-
-    .message {
-      margin-top: 10px;
-      font-size: 0.9rem;
-    }
-
-    .error { color: var(--error); }
-    .success { color: var(--success); }
-
     @keyframes fadeIn {
-      from { opacity: 0; transform: scale(0.95);}
-      to   { opacity: 1; transform: scale(1);}
+      from { opacity: 0; } to { opacity: 1; }
+    }
+    @keyframes logoPulse {
+      0%, 100% { filter: drop-shadow(0 0 15px #d4af7f); }
+      50% { filter: drop-shadow(0 0 25px #f7e29e); }
+    }
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.05); }
+    }
+    .msg {
+      color: #ffd700;
+      font-size: 0.85rem;
+      min-height: 20px;
     }
   </style>
 </head>
 <body>
+  <div class="overlay"></div>
+  <div class="container">
+    <img src="https://upload.wikimedia.org/wikipedia/commons/4/42/Assassin%27s_Creed_Logo.svg" class="logo" />
+    <h1>Bloodline: Ashaterra</h1>
+    <button class="start-btn" onclick="startGame()">Tap to Start</button>
 
-  <div class="auth-box">
-    <h2 id="form-title">Login</h2>
-    <input type="email" id="email" placeholder="Email" />
-    <input type="password" id="password" placeholder="Password" />
-    <button onclick="handleAuth()">Login</button>
-    <div class="switch" onclick="toggleForm()">Don't have an account? Register</div>
-    <div class="switch" onclick="forgotPassword()">Forgot password?</div>
-    <div class="message"><span id="msg"></span></div>
+    <div class="form-box" id="formBox">
+      <input id="username" placeholder="Username" required>
+      <input id="email" placeholder="Email" type="email" required>
+      <input id="password" placeholder="Password" type="password" required>
+      <input id="pin" placeholder="4-digit PIN" type="number" maxlength="4">
+      <input id="dob" placeholder="Date of Birth (YYYY-MM-DD)" type="date">
+      <input id="country" placeholder="Country">
+      <input id="captcha" placeholder="" disabled style="background:#333; color:#fff;">
+      <input id="captchaInput" placeholder="Enter Captcha">
+      <button class="auth-btn" onclick="handleAuth()">Login</button>
+      <div class="toggle" onclick="toggleForm()">Switch to Register</div>
+      <div class="toggle" onclick="forgotPassword()">Forgot Password?</div>
+      <div class="msg" id="msgBox"></div>
+    </div>
+    <div class="bottom-info">ID: AUTO_GENERATED | v3.0</div>
   </div>
+
+  <audio id="tapSound" src="https://cdn.pixabay.com/download/audio/2022/03/15/audio_23716337fc.mp3?filename=click-button-140881.mp3"></audio>
 
   <script>
     let isLogin = true;
+    const captcha = Math.random().toString(36).substring(2, 8).toUpperCase();
+    document.getElementById("captcha").value = "CAPTCHA: " + captcha;
+
+    function startGame() {
+      document.getElementById("tapSound").play();
+      document.querySelector(".start-btn").style.display = "none";
+      document.getElementById("formBox").style.display = "flex";
+      if (navigator.vibrate) navigator.vibrate([20, 30]);
+    }
 
     function toggleForm() {
       isLogin = !isLogin;
-      document.getElementById("form-title").innerText = isLogin ? "Login" : "Register";
-      document.querySelector("button").innerText = isLogin ? "Login" : "Register";
-      document.querySelectorAll(".switch")[0].innerText = isLogin
-        ? "Don't have an account? Register"
-        : "Already have an account? Login";
-      clearMessage();
-      if (navigator.vibrate) navigator.vibrate(20);
+      document.querySelector(".auth-btn").innerText = isLogin ? "Login" : "Register";
+      showMsg("");
     }
 
-    function showMessage(text, type = 'error') {
-      const msg = document.getElementById("msg");
-      msg.className = type;
-      msg.textContent = text;
-      if (navigator.vibrate) navigator.vibrate(30);
-    }
-
-    function clearMessage() {
-      const msg = document.getElementById("msg");
-      msg.textContent = "";
-      msg.className = "";
+    function showMsg(msg) {
+      document.getElementById("msgBox").innerText = msg;
     }
 
     function handleAuth() {
-      clearMessage();
+      const username = document.getElementById("username").value.trim();
       const email = document.getElementById("email").value.trim();
-      const password = document.getElementById("password").value.trim();
-      const users = JSON.parse(localStorage.getItem("users") || "{}");
+      const pass = document.getElementById("password").value.trim();
+      const pin = document.getElementById("pin").value.trim();
+      const inputCaptcha = document.getElementById("captchaInput").value.trim().toUpperCase();
 
-      if (!email || !password) {
-        showMessage("Fill all fields.");
+      if (!email || !pass || !username || !pin || inputCaptcha !== captcha) {
+        showMsg("Fill all fields & correct captcha.");
         return;
       }
 
-      if (isLogin) {
-        if (!users[email]) return showMessage("Account not found.");
-        if (users[email] !== password) return showMessage("Wrong password.");
-        localStorage.setItem("loggedIn", email);
-        showMessage("Login successful!", "success");
-        setTimeout(() => window.location.href = "game.html", 1200);
+      if (!isLogin) {
+        if (pass.length < 6) return showMsg("Password min 6 chars.");
+        if (pin.length !== 4) return showMsg("PIN must be 4 digits.");
+        const userId = "USR" + Date.now().toString(36);
+        localStorage.setItem("user_" + email, JSON.stringify({ username, email, pass, pin, userId }));
+        showMsg("Account created! Your ID: " + userId);
       } else {
-        if (password.length < 6) return showMessage("Password too short.");
-        if (users[email]) return showMessage("Account already exists.");
-        users[email] = password;
-        localStorage.setItem("users", JSON.stringify(users));
-        showMessage("Registered successfully!", "success");
+        const user = JSON.parse(localStorage.getItem("user_" + email));
+        if (!user || user.pass !== pass) return showMsg("Invalid credentials.");
+        showMsg("Welcome back, " + user.username + "!");
       }
     }
 
     function forgotPassword() {
       const email = document.getElementById("email").value.trim();
-      const users = JSON.parse(localStorage.getItem("users") || "{}");
-      if (!email) return showMessage("Enter email first.");
-      if (!users[email]) return showMessage("Email not found.");
-      showMessage("Password: " + users[email], "success");
-    }
-
-    // Redirect if already logged in
-    if (localStorage.getItem("loggedIn")) {
-      window.location.href = "game.html";
-    }
-  </script>
-
-</body>
-</html>
+      const user = JSON.parse(localStorage.getItem("user_" + email));
+      if (!user) return showMsg("
