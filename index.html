@@ -1,222 +1,125 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Bloodline Ashaterra - Login</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" /><meta name="viewport" content="width=device-width,initial-scale=1.0">
+  <title>HUD-Style Login</title>
   <style>
     :root {
-      --main-color: #c02942;
-      --bg-gradient: linear-gradient(-45deg, #1a1a1a, #2e2e2e, #111, #1c1c1c);
+      --neon: #0ff;
+      --bg-dark: #0a0a0a;
+      --hud-glass: rgba(10,10,10,0.6);
+      --shadow: 0 0 20px rgba(0,255,255,0.3);
     }
-
-    * {
-      box-sizing: border-box;
-      font-family: 'Segoe UI', Roboto, sans-serif;
-    }
-
-    body {
-      margin: 0;
-      padding: 0;
-      height: 100vh;
-      background: var(--bg-gradient);
-      background-size: 400% 400%;
-      animation: gradientMove 10s ease infinite;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      overflow: hidden;
-    }
-
-    @keyframes gradientMove {
-      0% { background-position: 0% 50% }
-      50% { background-position: 100% 50% }
-      100% { background-position: 0% 50% }
-    }
-
+    body, html {margin:0;padding:0;height:100%;background:#070707;overflow:hidden;font-family:sans-serif;color:#ccc;}
+    body {background:radial-gradient(circle, #111, #000);}
+    /* animated noise */
+    .noise {position:fixed;width:200%;height:200%;top:-50%;left:-50%;background:black;opacity:0.03;mix-blend-mode:overlay;animation:noiseAnim 0.2s steps(2) infinite;}
+    @keyframes noiseAnim {to {transform:translate(5%,5%);}}
     .container {
-      background: rgba(255, 255, 255, 0.06);
-      padding: 30px;
-      border-radius: 20px;
-      backdrop-filter: blur(18px);
-      box-shadow: 0 8px 25px rgba(0,0,0,0.4);
-      width: 90%;
-      max-width: 380px;
-      transition: all 0.5s ease;
+      position:relative;z-index:2;
+      width:360px;background:var(--hud-glass);
+      border:2px solid var(--neon);
+      border-radius:16px;
+      backdrop-filter:blur(12px);
+      box-shadow:var(--shadow);
+      padding:30px;
+      transition: height 0.5s ease;
     }
-
-    h2 {
-      text-align: center;
-      color: #fff;
-      font-size: 24px;
-      margin-bottom: 20px;
-    }
-
-    label {
-      display: block;
-      margin: 10px 0 5px;
-      color: #ccc;
-      font-size: 13px;
-    }
-
+    .container.expanded {height:480px;}
+    h2 {color:#fff;text-align:center;margin:0 0 20px;}
+    label {font-size:13px;margin-top:10px;display:block;}
     input {
-      width: 100%;
-      padding: 12px;
-      border-radius: 10px;
-      border: none;
-      background: #111;
-      color: white;
-      outline: none;
-      transition: 0.3s;
+      width:100%;padding:12px;margin-top:4px;margin-bottom:12px;
+      background:#111;border:none;border-radius:8px;
+      color:#fff;outline:none;
+      transition: box-shadow 0.3s;
     }
-
-    input:focus {
-      box-shadow: 0 0 10px var(--main-color);
-      background: #1c1c1c;
-    }
-
+    input:focus {box-shadow:0 0 12px var(--neon);}
     button {
-      width: 100%;
-      padding: 12px;
-      background: var(--main-color);
-      color: white;
-      border: none;
-      font-weight: bold;
-      border-radius: 10px;
-      margin-top: 18px;
-      cursor: pointer;
-      transition: all 0.3s;
+      width:100%;padding:14px;
+      background:transparent;border:2px solid var(--neon);
+      border-radius:8px;color:#fff;
+      font-size:15px;cursor:pointer;
+      position:relative;
+      overflow:hidden;
+      transition:background 0.3s;
     }
-
-    button:hover {
-      background: #9c1f34;
+    button::before {
+      content:"";position:absolute;top:0;left:-100%;
+      width:100%;height:100%;
+      background:var(--neon);
+      opacity:0.2;
+      transition: left 0.5s;
     }
-
-    .toggle-mode {
-      text-align: center;
-      margin-top: 14px;
-      color: #aaa;
-      cursor: pointer;
-      font-size: 13px;
+    button:hover::before {left:0;}
+    button:hover {background:rgba(0,255,255,0.1);}
+    .toggle {color:#888;text-align:center;margin-top:12px;cursor:pointer;font-size:13px;}
+    .notif {
+      position:fixed;top:20px;right:-300px;
+      background:var(--hud-glass);backdrop-filter:blur(12px);
+      border-left:4px solid var(--neon);
+      padding:12px 18px;border-radius:8px;
+      color:#fff;box-shadow:var(--shadow);
+      display:flex;align-items:center;
+      transition:right 0.4s;
+      z-index:3;
     }
-
-    .notification {
-      position: fixed;
-      top: 20px;
-      right: 20px;
-      background: rgba(30, 30, 30, 0.9);
-      padding: 14px 20px;
-      border-radius: 10px;
-      border-left: 5px solid var(--main-color);
-      color: white;
-      font-size: 14px;
-      opacity: 0;
-      transform: translateY(-20px);
-      transition: all 0.4s ease;
-      z-index: 1000;
-    }
-
-    .notification.show {
-      opacity: 1;
-      transform: translateY(0);
-    }
-
-    .footer-info {
-      position: absolute;
-      bottom: 10px;
-      right: 14px;
-      font-size: 12px;
-      color: #888;
-    }
-
-    .fadeIn {
-      animation: fadeIn 0.5s ease forwards;
-    }
-
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(20px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
+    .notif.show {right:20px;}
+    .notif.success {border-left-color:lime;}
+    .footer {position:fixed;bottom:12px;right:14px;font-size:12px;color:#555;}
   </style>
+  <script>
+    let isLogin=true;
+    function toggleMode(){
+      isLogin=!isLogin;
+      authBox.classList.toggle('expanded', !isLogin);
+      title.innerText=isLogin?'Login':'Register';
+      toggleBtn.innerText=isLogin?'Switch to Register':'Switch to Login';
+      document.getElementById('extra').style.display=isLogin?'none':'block';
+      showNotif(isLogin?'Switched to Login':'Switched to Register',true);
+    }
+    function showNotif(msg,ok=false){
+      notifBox.className='notif'+(ok?' success':'')+' show';
+      notifBox.textContent= (ok?'✅ ':'❌ ')+msg;
+      setTimeout(()=>notifBox.classList.remove('show'),3000);
+    }
+    function submit(){
+      const email=e.value.trim(), pw=p.value;
+      if(!/^[^@]+@[^@]+\.[^@]+$/.test(email)) return showNotif("Invalid email.");
+      if(pw.length<6) return showNotif("Password min 6 chars.");
+      let key='u::'+email;
+      if(isLogin){
+        let u=localStorage.getItem(key);
+        if(!u) return showNotif("No account.");
+        if(JSON.parse(u).pw!==pw) return showNotif("Wrong password.");
+        showNotif("Login success",true);
+      } else {
+        let un=uName.value.trim(), dob=dob.value;
+        if(!un||!dob) return showNotif("Fill all.");
+        if(localStorage.getItem(key)) return showNotif("Email exists.");
+        localStorage.setItem(key,JSON.stringify({email,pw,un,dob}));
+        showNotif("Account created",true);
+        toggleMode();
+      }
+    }
+    window.onload=()=>{generateNoise();}
+    function generateNoise(){
+      document.body.insertAdjacentHTML('beforeend','<div class="noise"></div>');
+    }
+  </script>
 </head>
 <body>
-
-<div class="container fadeIn" id="authBox">
-  <h2 id="formTitle">Login</h2>
-
-  <label>Email <span style="color:red;">*</span></label>
-  <input type="email" id="email" placeholder="you@example.com" required>
-
-  <label>Password <span style="color:red;">*</span></label>
-  <input type="password" id="password" placeholder="Enter password" required>
-
-  <div id="extraFields" style="display:none;">
-    <label>Username <span style="color:red;">*</span></label>
-    <input type="text" id="username" placeholder="Choose a username">
-
-    <label>Date of Birth <span style="color:red;">*</span></label>
-    <input type="date" id="dob">
+  <div class="container" id="authBox" style="height:380px;">
+    <h2 id="title">Login</h2>
+    <label>Email *</label><input id="e">
+    <label>Password *</label><input type="password" id="p">
+    <div id="extra" style="display:none;">
+      <label>Username *</label><input id="uName"><label>Date of Birth *</label><input type="date" id="dob">
+    </div>
+    <button onclick="submit()">Submit</button>
+    <div class="toggle" onclick="toggleMode()" id="toggleBtn">Switch to Register</div>
   </div>
-
-  <button onclick="submit()">Login</button>
-  <div class="toggle-mode" onclick="toggleMode()">Switch to Register</div>
-</div>
-
-<div class="notification" id="notifBox">Notification</div>
-<div class="footer-info">Bloodline v1.4 | Local Auth</div>
-
-<script>
-  let isLogin = true;
-  const notifBox = document.getElementById("notifBox");
-
-  function toggleMode() {
-    isLogin = !isLogin;
-    document.getElementById("formTitle").innerText = isLogin ? "Login" : "Register";
-    document.querySelector("button").innerText = isLogin ? "Login" : "Register";
-    document.getElementById("extraFields").style.display = isLogin ? "none" : "block";
-    notify(isLogin ? "Switched to Login" : "Switched to Register", true);
-  }
-
-  function notify(msg, success = false) {
-    notifBox.innerText = msg;
-    notifBox.className = `notification show ${success ? 'success' : ''}`;
-    setTimeout(() => notifBox.classList.remove("show"), 3000);
-    navigator.vibrate?.(success ? 10 : [40, 20, 40]);
-  }
-
-  function validateEmail(email) {
-    const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    return regex.test(email);
-  }
-
-  function submit() {
-    const email = document.getElementById("email").value.trim().toLowerCase();
-    const password = document.getElementById("password").value.trim();
-    const username = document.getElementById("username")?.value.trim();
-    const dob = document.getElementById("dob")?.value;
-
-    if (!validateEmail(email)) return notify("Please enter a valid email.");
-    if (!password || password.length < 6) return notify("Password must be at least 6 characters.");
-
-    const key = "user::" + email;
-
-    if (isLogin) {
-      const user = localStorage.getItem(key);
-      if (!user) return notify("Account not found.");
-      const data = JSON.parse(user);
-      if (data.password !== password) return notify("Incorrect password.");
-      notify("Welcome back, " + data.username + "!", true);
-    } else {
-      if (!username || !dob) return notify("Fill all fields.");
-      const birthYear = new Date(dob).getFullYear();
-      const age = new Date().getFullYear() - birthYear;
-      if (age < 13) return notify("Minimum age is 13+.");
-      if (localStorage.getItem(key)) return notify("Email already registered.");
-      localStorage.setItem(key, JSON.stringify({ email, password, username, dob }));
-      notify("Account created successfully!", true);
-    }
-  }
-</script>
-
+  <div class="notif" id="notifBox"></div>
+  <div class="footer">v1.5 - HUD Login</div>
 </body>
 </html>
