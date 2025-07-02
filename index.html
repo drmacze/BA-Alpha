@@ -1,261 +1,198 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>RPG Login System</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&family=Poppins:wght@400;600&display=swap" rel="stylesheet">
   <style>
-    html, body {
-      margin: 0; padding: 0;
-      font-family: 'SF Pro Display', sans-serif;
-      background: linear-gradient(135deg, #1e1e2f, #252542);
-      display: flex; justify-content: center; align-items: center;
-      height: 100vh; overflow: hidden;
+    * {
+      box-sizing: border-box;
+      font-family: 'Poppins', 'Inter', sans-serif;
     }
-    body::before {
-      content: ''; position: fixed; inset: 0;
-      background: radial-gradient(circle at center, rgba(128,0,255,0.2), transparent);
-      animation: aura 5s ease-in-out infinite; z-index: -1;
+    body {
+      margin: 0;
+      padding: 0;
+      background: radial-gradient(ellipse at bottom, #101018 0%, #080808 100%);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      overflow: hidden;
     }
-    @keyframes aura {
-      0%,100% { transform: scale(1); opacity: 0.8; }
-      50% { transform: scale(1.05); opacity: 1; }
-    }
-    .card {
-      background: rgba(255,255,255,0.05);
-      backdrop-filter: blur(20px);
-      border-radius: 20px;
-      padding: 40px;
-      width: 350px;
-      color: #fff;
-      box-shadow: 0 0 30px rgba(255,255,255,0.05);
-      position: relative;
-    }
-    .card::after {
-      content: ''; position: absolute; bottom: 0; left: 0; height: 4px; width: 100%;
-      background: linear-gradient(270deg, red, orange, yellow, green, blue, indigo, violet);
-      background-size: 300% 300%;
-      animation: rgbMove 8s linear infinite;
-      border-radius: 0 0 20px 20px;
-    }
-    @keyframes rgbMove {
-      0% { background-position: 0% 50%; }
-      100% { background-position: 100% 50%; }
-    }
-    h2 {
-      text-align: center; margin-bottom: 20px;
-    }
-    .form-group {
-      margin-bottom: 15px;
-    }
-    input {
-      width: 100%; padding: 12px 14px;
-      border: 1px solid rgba(255,255,255,0.2);
-      border-radius: 12px;
-      background: rgba(255,255,255,0.08);
-      color: #fff;
-      font-size: 15px;
-    }
-    input:focus {
-      border-color: #7fffd4;
-      outline: none;
-    }
-    .strength-meter {
-      height: 5px; width: 100%;
-      background: rgba(255,255,255,0.1);
-      border-radius: 4px;
-      overflow: hidden; margin-top: 4px;
-    }
-    .strength-meter div {
-      height: 100%; width: 0%;
-      transition: width 0.3s;
-    }
-    .button {
-      background: linear-gradient(to right, #00ffc3, #007cf0);
-      color: #000;
-      border: none;
-      padding: 12px;
-      border-radius: 12px;
-      width: 100%;
-      font-weight: bold;
-      cursor: pointer;
-      transition: transform 0.2s;
-    }
-    .button:hover {
-      transform: scale(1.02);
-    }
-    .toggle {
-      margin-top: 10px;
-      text-align: center;
-      color: #aaa;
-      cursor: pointer;
-    }
-    .toggle:hover { text-decoration: underline; }
-    .notif {
-      position: fixed;
-      top: 20px; right: 20px;
-      background: rgba(255,255,255,0.1);
-      color: #fff;
-      padding: 12px 16px;
-      border-radius: 12px;
-      animation: fadeIn 0.5s ease;
-      box-shadow: 0 0 15px rgba(255,255,255,0.2);
-      z-index: 999;
-    }
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(-10px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-    .otp-card {
-      position: fixed; inset: 0;
-      background: rgba(0,0,0,0.4);
-      backdrop-filter: blur(8px);
-      display: flex; justify-content: center; align-items: center;
-    }
-    .otp-inner {
-      background: rgba(255,255,255,0.06);
-      backdrop-filter: blur(12px);
-      padding: 30px;
-      border-radius: 18px;
-      width: 300px;
-      text-align: center;
-    }
-    .slider-container {
-      background: rgba(255,255,255,0.1);
-      border-radius: 6px;
-      height: 8px;
-      position: relative;
-      margin: 15px 0;
-    }
-    .slider-thumb {
-      width: 24px; height: 24px;
-      background: #7fffd4;
-      border-radius: 50%;
+    .glow-bar {
       position: absolute;
-      top: -8px; left: 0;
+      bottom: 0;
+      width: 100%;
+      height: 6px;
+      background: linear-gradient(90deg, #0fffc1, #0f52ff, #0fffc1);
+      animation: move-glow 5s linear infinite;
+      filter: blur(4px);
+    }
+    @keyframes move-glow {
+      0% {background-position: 0 0;}
+      100% {background-position: 400% 0;}
+    }
+    .login-card {
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 20px;
+      padding: 30px;
+      backdrop-filter: blur(14px);
+      width: 100%;
+      max-width: 400px;
+      box-shadow: 0 0 30px rgba(0,255,255,0.1);
+      text-align: center;
+      color: #fff;
+    }
+    .login-card h2 {
+      margin-bottom: 20px;
+    }
+    input, select, button {
+      width: 100%;
+      padding: 10px;
+      margin: 10px 0;
+      background: rgba(255,255,255,0.08);
+      border: none;
+      border-radius: 10px;
+      color: #fff;
+      font-size: 14px;
+    }
+    button {
+      background: linear-gradient(145deg, #0fffc1, #0f52ff);
       cursor: pointer;
+      transition: 0.3s;
+    }
+    button:hover {
+      transform: scale(1.03);
+      box-shadow: 0 0 10px #0fffc1;
+    }
+    .dashboard {
+      display: none;
+      flex-direction: column;
+      gap: 10px;
+      margin-top: 20px;
+      text-align: left;
+    }
+    .dashboard h3 {
+      border-bottom: 1px solid rgba(255,255,255,0.2);
+      padding-bottom: 5px;
+    }
+    .slot-list {
+      background: rgba(255,255,255,0.03);
+      padding: 10px;
+      margin: 10px 0;
+      border-radius: 10px;
     }
   </style>
 </head>
 <body>
-  <div class="card">
-    <h2 id="formTitle">Login</h2>
-    <div class="form-group"><input type="email" id="email" placeholder="Email *" /></div>
-    <div class="form-group">
-      <input type="password" id="password" placeholder="Password *" />
-      <div class="strength-meter"><div id="strengthBar"></div></div>
-    </div>
-    <div class="slider-container">
-      <div class="slider-thumb" id="slider"></div>
-    </div>
-    <button class="button" id="mainButton">Login</button>
-    <div class="toggle" id="toggleLink">Belum punya akun? Daftar</div>
-  </div>
-
-  <!-- OTP Card -->
-  <div class="otp-card" id="otpCard" style="display:none;">
-    <div class="otp-inner">
-      <h3>Verifikasi OTP</h3>
-      <input type="text" id="otpInput" placeholder="Masukkan kode OTP" />
-      <button class="button" id="verifyOTP">Verifikasi</button>
+  <div class="login-card" id="loginBox">
+    <img src="https://telegra.ph/file/f40fef9f7ddcc02d45f0b.png" alt="RPG Logo" width="80" style="margin-bottom: 20px;">
+    <h2>RPG Login</h2>
+    <select id="accountSelect"></select>
+    <input type="email" id="email" placeholder="Email" />
+    <input type="password" id="password" placeholder="Password" />
+    <div id="captchaBox"></div>
+    <input type="text" id="captchaInput" placeholder="Jawaban CAPTCHA"/>
+    <button onclick="handleLogin()">Login</button>
+    <button onclick="saveAccount()">Simpan Akun</button>
+    <div class="dashboard" id="dashboard">
+      <h3>Dashboard RPG</h3>
+      <div id="infoBox"></div>
+      <button onclick="changeTheme()">Ubah Tema</button>
+      <button onclick="logout()">Logout</button>
     </div>
   </div>
+  <div class="glow-bar"></div>
 
   <script>
+    const captchaBox = document.getElementById('captchaBox');
+    const captchaInput = document.getElementById('captchaInput');
     const emailInput = document.getElementById('email');
-    const passInput = document.getElementById('password');
-    const strengthBar = document.getElementById('strengthBar');
-    const slider = document.getElementById('slider');
-    const mainButton = document.getElementById('mainButton');
-    const toggleLink = document.getElementById('toggleLink');
-    const formTitle = document.getElementById('formTitle');
-    let isLogin = true, dragging = false, captchaPass = false, otpCode = "";
+    const passwordInput = document.getElementById('password');
+    const select = document.getElementById('accountSelect');
+    const dashboard = document.getElementById('dashboard');
+    const infoBox = document.getElementById('infoBox');
+    const loginBox = document.getElementById('loginBox');
+    let captchaAnswer = 0;
+    let theme = 'RPG Aura';
 
-    // Toast
-    function showNotif(text) {
-      const notif = document.createElement('div');
-      notif.className = 'notif';
-      notif.innerText = text;
-      document.body.appendChild(notif);
-      setTimeout(() => notif.remove(), 3500);
-      navigator.vibrate?.(60);
+    function generateCaptcha() {
+      const a = Math.floor(Math.random() * 10);
+      const b = Math.floor(Math.random() * 10);
+      captchaAnswer = a + b;
+      captchaBox.innerText = `CAPTCHA: Berapa ${a} + ${b}?`;
     }
 
-    // Strength
-    passInput.addEventListener('input', () => {
-      const v = passInput.value;
-      let score = 0;
-      if (v.length > 5) score++;
-      if (/[A-Z]/.test(v)) score++;
-      if (/[0-9]/.test(v)) score++;
-      if (/\W/.test(v)) score++;
-      strengthBar.style.width = (score * 25) + '%';
-      strengthBar.style.background = score <= 1 ? 'red' : score <= 2 ? 'orange' : '#7fffd4';
+    function saveAccount() {
+      const email = emailInput.value;
+      const pass = passwordInput.value;
+      if (!email || !pass) return alert("Lengkapi email & password!");
+      const accounts = JSON.parse(localStorage.getItem('rpgAccounts') || '[]');
+      accounts.push({email, pass});
+      localStorage.setItem('rpgAccounts', JSON.stringify(accounts));
+      loadAccounts();
+      alert("Akun disimpan!");
+    }
+
+    function loadAccounts() {
+      select.innerHTML = '<option value="">Pilih akun tersimpan...</option>';
+      const accounts = JSON.parse(localStorage.getItem('rpgAccounts') || '[]');
+      accounts.forEach((a, i) => {
+        const opt = document.createElement('option');
+        opt.value = i;
+        opt.innerText = `${a.email}`;
+        select.appendChild(opt);
+      });
+    }
+
+    select.addEventListener('change', () => {
+      const accounts = JSON.parse(localStorage.getItem('rpgAccounts') || '[]');
+      const selected = accounts[select.value];
+      if (selected) {
+        emailInput.value = selected.email;
+        passwordInput.value = selected.pass;
+      }
     });
 
-    // CAPTCHA
-    slider.onmousedown = () => dragging = true;
-    document.onmouseup = () => {
-      if (dragging) {
-        dragging = false;
-        const pos = parseInt(slider.style.left || 0);
-        if (pos >= 150) {
-          slider.style.left = '170px';
-          captchaPass = true;
-          showNotif("CAPTCHA OK!");
-        } else {
-          slider.style.left = '0px';
-          captchaPass = false;
-        }
-      }
-    };
-    document.onmousemove = e => {
-      if (dragging) {
-        const rect = slider.parentElement.getBoundingClientRect();
-        let x = e.clientX - rect.left - 12;
-        x = Math.max(0, Math.min(x, rect.width - 24));
-        slider.style.left = x + 'px';
-      }
-    };
+    function handleLogin() {
+      if (parseInt(captchaInput.value) !== captchaAnswer) return alert("CAPTCHA salah!");
+      const email = emailInput.value;
+      const role = ["Shadowblade", "Runeknight", "Archseer"][Math.floor(Math.random() * 3)];
+      const avatar = ["🧙", "🧝‍♂️", "🧛‍♀️"][Math.floor(Math.random() * 3)];
+      const stats = JSON.parse(localStorage.getItem('rpgStats') || '{}');
+      stats[email] = stats[email] || {success: 0, fail: 0, lastLogin: ""};
+      stats[email].success += 1;
+      stats[email].lastLogin = new Date().toLocaleString();
+      localStorage.setItem('rpgStats', JSON.stringify(stats));
+      showDashboard(email, role, avatar, stats[email]);
+    }
 
-    // Toggle login/register
-    toggleLink.onclick = () => {
-      isLogin = !isLogin;
-      formTitle.textContent = isLogin ? 'Login' : 'Register';
-      mainButton.textContent = isLogin ? 'Login' : 'Register';
-      toggleLink.textContent = isLogin ? 'Belum punya akun? Daftar' : 'Sudah punya akun? Login';
-    };
+    function showDashboard(email, role, avatar, data) {
+      loginBox.querySelectorAll("input, button, select").forEach(el => el.style.display = "none");
+      dashboard.style.display = "flex";
+      dashboard.style.animation = "fadeIn 1s ease";
+      infoBox.innerHTML = `
+        <p>📧 Email: ${email}</p>
+        <p>${avatar} Role: ${role}</p>
+        <p>🎮 Tema aktif: ${theme}</p>
+        <p>🕓 Terakhir login: ${data.lastLogin}</p>
+        <p>✅ Login sukses: ${data.success}</p>
+        <p>❌ Gagal login: ${data.fail}</p>
+      `;
+    }
 
-    // Main action
-    mainButton.onclick = () => {
-      const email = emailInput.value.trim();
-      const pass = passInput.value.trim();
-      if (!email.includes('@') || pass.length < 4) return showNotif('Email dan password wajib diisi');
-      if (!captchaPass) return showNotif('Geser CAPTCHA terlebih dahulu');
+    function logout() {
+      location.reload();
+    }
 
-      if (isLogin) {
-        // Simulasi login sukses → kirim OTP
-        otpCode = Math.floor(100000 + Math.random() * 900000).toString();
-        document.getElementById('otpCard').style.display = 'flex';
-        showNotif("Kode OTP: " + otpCode);
-        new Audio('https://cdn.pixabay.com/download/audio/2022/03/15/audio_8b6c1e4bb7.mp3').play();
-      } else {
-        localStorage.setItem(email, pass);
-        showNotif('Akun berhasil dibuat!');
-      }
-    };
+    function changeTheme() {
+      theme = theme === 'Dark RPG' ? 'RPG Aura' : 'Dark RPG';
+      alert("Tema diubah ke: " + theme);
+    }
 
-    // OTP verify
-    document.getElementById('verifyOTP').onclick = () => {
-      const input = document.getElementById('otpInput').value.trim();
-      if (input === otpCode) {
-        showNotif('Login sukses!');
-        document.getElementById('otpCard').style.display = 'none';
-        new Audio('https://cdn.pixabay.com/download/audio/2022/03/09/audio_4ccf4f5361.mp3').play();
-      } else {
-        showNotif('Kode OTP salah!');
-      }
-    };
+    generateCaptcha();
+    loadAccounts();
   </script>
 </body>
 </html>
