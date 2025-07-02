@@ -1,125 +1,115 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" /><meta name="viewport" content="width=device-width,initial-scale=1.0">
-  <title>HUD-Style Login</title>
-  <style>
-    :root {
-      --neon: #0ff;
-      --bg-dark: #0a0a0a;
-      --hud-glass: rgba(10,10,10,0.6);
-      --shadow: 0 0 20px rgba(0,255,255,0.3);
-    }
-    body, html {margin:0;padding:0;height:100%;background:#070707;overflow:hidden;font-family:sans-serif;color:#ccc;}
-    body {background:radial-gradient(circle, #111, #000);}
-    /* animated noise */
-    .noise {position:fixed;width:200%;height:200%;top:-50%;left:-50%;background:black;opacity:0.03;mix-blend-mode:overlay;animation:noiseAnim 0.2s steps(2) infinite;}
-    @keyframes noiseAnim {to {transform:translate(5%,5%);}}
-    .container {
-      position:relative;z-index:2;
-      width:360px;background:var(--hud-glass);
-      border:2px solid var(--neon);
-      border-radius:16px;
-      backdrop-filter:blur(12px);
-      box-shadow:var(--shadow);
-      padding:30px;
-      transition: height 0.5s ease;
-    }
-    .container.expanded {height:480px;}
-    h2 {color:#fff;text-align:center;margin:0 0 20px;}
-    label {font-size:13px;margin-top:10px;display:block;}
-    input {
-      width:100%;padding:12px;margin-top:4px;margin-bottom:12px;
-      background:#111;border:none;border-radius:8px;
-      color:#fff;outline:none;
-      transition: box-shadow 0.3s;
-    }
-    input:focus {box-shadow:0 0 12px var(--neon);}
-    button {
-      width:100%;padding:14px;
-      background:transparent;border:2px solid var(--neon);
-      border-radius:8px;color:#fff;
-      font-size:15px;cursor:pointer;
-      position:relative;
-      overflow:hidden;
-      transition:background 0.3s;
-    }
-    button::before {
-      content:"";position:absolute;top:0;left:-100%;
-      width:100%;height:100%;
-      background:var(--neon);
-      opacity:0.2;
-      transition: left 0.5s;
-    }
-    button:hover::before {left:0;}
-    button:hover {background:rgba(0,255,255,0.1);}
-    .toggle {color:#888;text-align:center;margin-top:12px;cursor:pointer;font-size:13px;}
-    .notif {
-      position:fixed;top:20px;right:-300px;
-      background:var(--hud-glass);backdrop-filter:blur(12px);
-      border-left:4px solid var(--neon);
-      padding:12px 18px;border-radius:8px;
-      color:#fff;box-shadow:var(--shadow);
-      display:flex;align-items:center;
-      transition:right 0.4s;
-      z-index:3;
-    }
-    .notif.show {right:20px;}
-    .notif.success {border-left-color:lime;}
-    .footer {position:fixed;bottom:12px;right:14px;font-size:12px;color:#555;}
-  </style>
-  <script>
-    let isLogin=true;
-    function toggleMode(){
-      isLogin=!isLogin;
-      authBox.classList.toggle('expanded', !isLogin);
-      title.innerText=isLogin?'Login':'Register';
-      toggleBtn.innerText=isLogin?'Switch to Register':'Switch to Login';
-      document.getElementById('extra').style.display=isLogin?'none':'block';
-      showNotif(isLogin?'Switched to Login':'Switched to Register',true);
-    }
-    function showNotif(msg,ok=false){
-      notifBox.className='notif'+(ok?' success':'')+' show';
-      notifBox.textContent= (ok?'✅ ':'❌ ')+msg;
-      setTimeout(()=>notifBox.classList.remove('show'),3000);
-    }
-    function submit(){
-      const email=e.value.trim(), pw=p.value;
-      if(!/^[^@]+@[^@]+\.[^@]+$/.test(email)) return showNotif("Invalid email.");
-      if(pw.length<6) return showNotif("Password min 6 chars.");
-      let key='u::'+email;
-      if(isLogin){
-        let u=localStorage.getItem(key);
-        if(!u) return showNotif("No account.");
-        if(JSON.parse(u).pw!==pw) return showNotif("Wrong password.");
-        showNotif("Login success",true);
-      } else {
-        let un=uName.value.trim(), dob=dob.value;
-        if(!un||!dob) return showNotif("Fill all.");
-        if(localStorage.getItem(key)) return showNotif("Email exists.");
-        localStorage.setItem(key,JSON.stringify({email,pw,un,dob}));
-        showNotif("Account created",true);
-        toggleMode();
-      }
-    }
-    window.onload=()=>{generateNoise();}
-    function generateNoise(){
-      document.body.insertAdjacentHTML('beforeend','<div class="noise"></div>');
-    }
-  </script>
+<meta charset="UTF-8">
+<title>Bloodline Auth</title>
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<style>
+  :root {
+    --bg-dark: #1b0d0c;
+    --card-bg: rgba(255,255,255,0.05);
+    --accent: #A62828;
+    --text: #EEE;
+    --shadow: 0 8px 20px rgba(0,0,0,0.5);
+  }
+  *{box-sizing:border-box;font-family:sans-serif;margin:0;padding:0;}
+  body{background:var(--bg-dark);min-height:100vh;display:flex;align-items:center;justify-content:center;color:var(--text);}
+  .card{width:350px;padding:24px;border-radius:20px;background:var(--card-bg);backdrop-filter:blur(10px);box-shadow:var(--shadow);position:relative;overflow:hidden;}
+  h2{text-align:center;font-size:1.4em;margin-bottom:16px;color:var(--accent);}
+  .toggle{font-size:0.9em;color:#aaa;text-align:center;cursor:pointer;margin-bottom:16px;}
+  .step{display:none;animation:fadeIn 0.4s;}
+  .step.active{display:block;}
+  label{display:block;margin:10px 0 4px;font-size:0.85em;}
+  input{width:100%;padding:12px;border:none;border-radius:8px;background:#2c1f1d;color:white;font-size:1em;transition:box-shadow .3s;}
+  input:focus{outline:none;box-shadow:0 0 8px var(--accent);}
+  .btn{width:100%;padding:12px;margin-top:16px;background:var(--accent);border:none;border-radius:8px;color:white;font-size:1em;cursor:pointer;transition:background .3s;}
+  .btn:hover{background:#891f23;}
+  .notif{position:absolute;top:16px;right:16px;padding:8px 12px;background:#222;border-left:4px solid var(--accent);border-radius:6px;opacity:0;transform:translateY(-10px);transition:all .4s;}
+  .notif.show{opacity:1;transform:translateY(0);}
+  @keyframes fadeIn{from{opacity:0;}to{opacity:1;}}
+</style>
 </head>
 <body>
-  <div class="container" id="authBox" style="height:380px;">
-    <h2 id="title">Login</h2>
-    <label>Email *</label><input id="e">
-    <label>Password *</label><input type="password" id="p">
-    <div id="extra" style="display:none;">
-      <label>Username *</label><input id="uName"><label>Date of Birth *</label><input type="date" id="dob">
-    </div>
-    <button onclick="submit()">Submit</button>
-    <div class="toggle" onclick="toggleMode()" id="toggleBtn">Switch to Register</div>
+<div class="card">
+  <h2 id="title">Login</h2>
+  <div class="toggle" onclick="toggleMode()">Don't have account? Sign Up</div>
+
+  <div id="step-auth" class="step active">
+    <label>Email</label><input type="email" id="email" placeholder="you@example.com">
+    <label>Password</label><input type="password" id="password" placeholder="••••••••">
+    <button class="btn" onclick="doAuth()">Continue</button>
   </div>
-  <div class="notif" id="notifBox"></div>
-  <div class="footer">v1.5 - HUD Login</div>
+
+  <div id="step-register" class="step">
+    <label>PIN (4 digits)</label><input type="text" id="pin" maxlength="4" placeholder="1234">
+    <label>DOB</label><input type="date" id="dob">
+    <button class="btn" onclick="doRegister()">Register</button>
+  </div>
+
+  <div id="step-verify" class="step">
+    <label>Enter verification code</label><input type="text" id="code" placeholder="123456">
+    <button class="btn" onclick="doVerify()">Verify</button>
+  </div>
+
+  <div id="step-success" class="step">
+    <h2>Welcome!</h2>
+    <p>You're logged in 🎉</p>
+  </div>
+
+  <div class="notif" id="notif"></div>
+</div>
+
+<script>
+  let isLogin = true;
+  let tempEmail;
+
+  function toggleMode(){
+    isLogin = !isLogin;
+    document.getElementById('title').innerText = isLogin?'Login':'Sign Up';
+    document.querySelector('.toggle').innerText = isLogin?'Don’t have account? Sign Up':'Already have account? Login';
+    showStep('step-auth');
+  }
+
+  function showStep(id){
+    document.querySelectorAll('.step').forEach(s=>s.classList.remove('active'));
+    document.getElementById(id).classList.add('active');
+  }
+
+  function notify(msg){
+    const n = document.getElementById('notif');
+    n.innerText = msg;
+    n.classList.add('show');
+    setTimeout(()=>n.classList.remove('show'),2500);
+  }
+
+  function doAuth(){
+    const email = emailInput.value.trim().toLowerCase();
+    const pass = password.value;
+    if(!email||!pass) return notify('Fill all fields.');
+    if(isLogin){
+      const key='user::'+email;
+      const u=localStorage.getItem(key);
+      if(!u||JSON.parse(u).password!==pass) return notify('Invalid credentials.');
+      showStep('step-success');
+    } else {
+      tempEmail=email;
+      showStep('step-register');
+    }
+  }
+
+  function doRegister(){
+    const pin=pin.value, dobval=dob.value;
+    if(pin.length!==4||isNaN(pin)||!dobval) return notify('Fill valid PIN & DOB.');
+    const key='user::'+tempEmail;
+    localStorage.setItem(key, JSON.stringify({email:tempEmail,password:password.value,pin, dob:dobval}));
+    showStep('step-verify');
+    notify('Verification code sent (demo: 123456)');
+  }
+
+  function doVerify(){
+    if(code.value!=='123456') return notify('Wrong code.');
+    showStep('step-success');
+  }
+</script>
 </body>
 </html>
