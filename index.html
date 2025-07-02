@@ -1,198 +1,174 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="id">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>RPG Login System</title>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+  <title>Bloodline: Awaken Pact</title>
   <style>
-    * {
-      box-sizing: border-box;
-      font-family: 'Poppins', 'Inter', sans-serif;
-    }
     body {
       margin: 0;
-      padding: 0;
-      background: radial-gradient(ellipse at bottom, #101018 0%, #080808 100%);
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
+      font-family: 'Segoe UI', sans-serif;
+      background: linear-gradient(to right, #1e1e2f, #2a2a3d);
+      color: white;
       overflow: hidden;
     }
-    .glow-bar {
-      position: absolute;
-      bottom: 0;
-      width: 100%;
-      height: 6px;
-      background: linear-gradient(90deg, #0fffc1, #0f52ff, #0fffc1);
-      animation: move-glow 5s linear infinite;
-      filter: blur(4px);
+    .screen {
+      display: none;
+      padding: 2rem;
+      max-width: 600px;
+      margin: auto;
     }
-    @keyframes move-glow {
-      0% {background-position: 0 0;}
-      100% {background-position: 400% 0;}
+    .active {
+      display: block;
     }
-    .login-card {
-      background: rgba(255, 255, 255, 0.05);
-      border-radius: 20px;
-      padding: 30px;
-      backdrop-filter: blur(14px);
-      width: 100%;
-      max-width: 400px;
-      box-shadow: 0 0 30px rgba(0,255,255,0.1);
+    h1 {
       text-align: center;
-      color: #fff;
-    }
-    .login-card h2 {
-      margin-bottom: 20px;
-    }
-    input, select, button {
-      width: 100%;
-      padding: 10px;
-      margin: 10px 0;
-      background: rgba(255,255,255,0.08);
-      border: none;
-      border-radius: 10px;
-      color: #fff;
-      font-size: 14px;
+      margin-bottom: 1rem;
     }
     button {
-      background: linear-gradient(145deg, #0fffc1, #0f52ff);
+      background: crimson;
+      border: none;
+      color: white;
+      padding: 0.6rem 1.2rem;
+      margin-top: 1rem;
       cursor: pointer;
-      transition: 0.3s;
+      border-radius: 5px;
+      font-weight: bold;
     }
-    button:hover {
-      transform: scale(1.03);
-      box-shadow: 0 0 10px #0fffc1;
+    .input-group {
+      margin: 1rem 0;
     }
-    .dashboard {
-      display: none;
-      flex-direction: column;
-      gap: 10px;
-      margin-top: 20px;
-      text-align: left;
+    label {
+      display: block;
+      margin-bottom: 0.2rem;
     }
-    .dashboard h3 {
-      border-bottom: 1px solid rgba(255,255,255,0.2);
-      padding-bottom: 5px;
+    input, select {
+      width: 100%;
+      padding: 0.5rem;
+      margin-bottom: 0.5rem;
+      border-radius: 4px;
+      border: none;
     }
-    .slot-list {
-      background: rgba(255,255,255,0.03);
-      padding: 10px;
-      margin: 10px 0;
-      border-radius: 10px;
+    .stats {
+      display: flex;
+      justify-content: space-between;
+      gap: 0.5rem;
+    }
+    .stat input {
+      width: 50px;
     }
   </style>
 </head>
 <body>
-  <div class="login-card" id="loginBox">
-    <img src="https://telegra.ph/file/f40fef9f7ddcc02d45f0b.png" alt="RPG Logo" width="80" style="margin-bottom: 20px;">
-    <h2>RPG Login</h2>
-    <select id="accountSelect"></select>
-    <input type="email" id="email" placeholder="Email" />
-    <input type="password" id="password" placeholder="Password" />
-    <div id="captchaBox"></div>
-    <input type="text" id="captchaInput" placeholder="Jawaban CAPTCHA"/>
-    <button onclick="handleLogin()">Login</button>
-    <button onclick="saveAccount()">Simpan Akun</button>
-    <div class="dashboard" id="dashboard">
-      <h3>Dashboard RPG</h3>
-      <div id="infoBox"></div>
-      <button onclick="changeTheme()">Ubah Tema</button>
-      <button onclick="logout()">Logout</button>
+
+  <div id="login" class="screen active">
+    <h1>🗝️ Masuk ke Dunia</h1>
+    <div class="input-group">
+      <label>Nama Akun</label>
+      <input type="text" id="username" placeholder="Masukkan nama kamu" />
     </div>
+    <button onclick="goToCharBuilder()">Lanjut</button>
   </div>
-  <div class="glow-bar"></div>
+
+  <div id="charbuilder" class="screen">
+    <h1>🧬 Buat Karakter</h1>
+    <div class="input-group">
+      <label>Nama Karakter</label>
+      <input type="text" id="charName" placeholder="Misal: Raviel" />
+    </div>
+    <div class="input-group">
+      <label>Jenis Kelamin</label>
+      <select id="gender">
+        <option value="male">Laki-laki</option>
+        <option value="female">Perempuan</option>
+      </select>
+    </div>
+    <div class="stats">
+      <div class="stat">
+        <label>STR</label>
+        <input type="number" id="str" value="5" min="0" />
+      </div>
+      <div class="stat">
+        <label>AGI</label>
+        <input type="number" id="agi" value="5" min="0" />
+      </div>
+      <div class="stat">
+        <label>INT</label>
+        <input type="number" id="int" value="5" min="0" />
+      </div>
+      <div class="stat">
+        <label>LUK</label>
+        <input type="number" id="luk" value="5" min="0" />
+      </div>
+    </div>
+    <button onclick="goToPact()">Lanjut ke Pact</button>
+  </div>
+
+  <div id="pact" class="screen">
+    <h1>🔥 Pilih Pact</h1>
+    <div class="input-group">
+      <label>Pilih satu perjanjian:</label>
+      <select id="pactSelect">
+        <option value="api">🔥 Pact of Fire — +ATK</option>
+        <option value="bayangan">🌑 Pact of Shadow — +LUK</option>
+        <option value="es">❄️ Pact of Ice — +DEF</option>
+        <option value="petir">⚡ Pact of Storm — +AGI</option>
+      </select>
+    </div>
+    <button onclick="finishSetup()">Selesaikan</button>
+  </div>
+
+  <div id="final" class="screen">
+    <h1>✅ Karakter Siap!</h1>
+    <p id="summary"></p>
+  </div>
 
   <script>
-    const captchaBox = document.getElementById('captchaBox');
-    const captchaInput = document.getElementById('captchaInput');
-    const emailInput = document.getElementById('email');
-    const passwordInput = document.getElementById('password');
-    const select = document.getElementById('accountSelect');
-    const dashboard = document.getElementById('dashboard');
-    const infoBox = document.getElementById('infoBox');
-    const loginBox = document.getElementById('loginBox');
-    let captchaAnswer = 0;
-    let theme = 'RPG Aura';
-
-    function generateCaptcha() {
-      const a = Math.floor(Math.random() * 10);
-      const b = Math.floor(Math.random() * 10);
-      captchaAnswer = a + b;
-      captchaBox.innerText = `CAPTCHA: Berapa ${a} + ${b}?`;
+    function switchScreen(id) {
+      document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+      document.getElementById(id).classList.add('active');
     }
 
-    function saveAccount() {
-      const email = emailInput.value;
-      const pass = passwordInput.value;
-      if (!email || !pass) return alert("Lengkapi email & password!");
-      const accounts = JSON.parse(localStorage.getItem('rpgAccounts') || '[]');
-      accounts.push({email, pass});
-      localStorage.setItem('rpgAccounts', JSON.stringify(accounts));
-      loadAccounts();
-      alert("Akun disimpan!");
+    function goToCharBuilder() {
+      const user = document.getElementById('username').value;
+      if (!user) return alert("Isi nama akun dulu.");
+      localStorage.setItem("rpg_user", user);
+      switchScreen('charbuilder');
     }
 
-    function loadAccounts() {
-      select.innerHTML = '<option value="">Pilih akun tersimpan...</option>';
-      const accounts = JSON.parse(localStorage.getItem('rpgAccounts') || '[]');
-      accounts.forEach((a, i) => {
-        const opt = document.createElement('option');
-        opt.value = i;
-        opt.innerText = `${a.email}`;
-        select.appendChild(opt);
-      });
+    function goToPact() {
+      const name = document.getElementById('charName').value;
+      if (!name) return alert("Nama karakter wajib diisi.");
+
+      const data = {
+        name,
+        gender: document.getElementById('gender').value,
+        stats: {
+          str: +document.getElementById('str').value,
+          agi: +document.getElementById('agi').value,
+          int: +document.getElementById('int').value,
+          luk: +document.getElementById('luk').value,
+        }
+      };
+      localStorage.setItem("rpg_char", JSON.stringify(data));
+      switchScreen('pact');
     }
 
-    select.addEventListener('change', () => {
-      const accounts = JSON.parse(localStorage.getItem('rpgAccounts') || '[]');
-      const selected = accounts[select.value];
-      if (selected) {
-        emailInput.value = selected.email;
-        passwordInput.value = selected.pass;
-      }
-    });
-
-    function handleLogin() {
-      if (parseInt(captchaInput.value) !== captchaAnswer) return alert("CAPTCHA salah!");
-      const email = emailInput.value;
-      const role = ["Shadowblade", "Runeknight", "Archseer"][Math.floor(Math.random() * 3)];
-      const avatar = ["🧙", "🧝‍♂️", "🧛‍♀️"][Math.floor(Math.random() * 3)];
-      const stats = JSON.parse(localStorage.getItem('rpgStats') || '{}');
-      stats[email] = stats[email] || {success: 0, fail: 0, lastLogin: ""};
-      stats[email].success += 1;
-      stats[email].lastLogin = new Date().toLocaleString();
-      localStorage.setItem('rpgStats', JSON.stringify(stats));
-      showDashboard(email, role, avatar, stats[email]);
-    }
-
-    function showDashboard(email, role, avatar, data) {
-      loginBox.querySelectorAll("input, button, select").forEach(el => el.style.display = "none");
-      dashboard.style.display = "flex";
-      dashboard.style.animation = "fadeIn 1s ease";
-      infoBox.innerHTML = `
-        <p>📧 Email: ${email}</p>
-        <p>${avatar} Role: ${role}</p>
-        <p>🎮 Tema aktif: ${theme}</p>
-        <p>🕓 Terakhir login: ${data.lastLogin}</p>
-        <p>✅ Login sukses: ${data.success}</p>
-        <p>❌ Gagal login: ${data.fail}</p>
+    function finishSetup() {
+      const pact = document.getElementById('pactSelect').value;
+      localStorage.setItem("rpg_pact", pact);
+      const user = localStorage.getItem("rpg_user");
+      const char = JSON.parse(localStorage.getItem("rpg_char"));
+      const summary = `
+        🧑‍🎮 Akun: <b>${user}</b><br>
+        🧙 Nama: <b>${char.name}</b> (${char.gender})<br>
+        📊 STR: ${char.stats.str}, AGI: ${char.stats.agi}, INT: ${char.stats.int}, LUK: ${char.stats.luk}<br>
+        🔥 Pact: <b>${pact}</b>
       `;
+      document.getElementById("summary").innerHTML = summary;
+      switchScreen('final');
     }
-
-    function logout() {
-      location.reload();
-    }
-
-    function changeTheme() {
-      theme = theme === 'Dark RPG' ? 'RPG Aura' : 'Dark RPG';
-      alert("Tema diubah ke: " + theme);
-    }
-
-    generateCaptcha();
-    loadAccounts();
   </script>
+
 </body>
 </html>
