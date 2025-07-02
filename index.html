@@ -1,260 +1,190 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Bloodline Ashaterra - Login</title>
+  <meta charset="UTF-8">
+  <title>RPG PS5 Login</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
-    :root {
-      --maroon: #4b1d1d;
-      --gold: #c9a444;
-      --bg: #121212;
-      --blur: rgba(18, 18, 18, 0.6);
-    }
-    body {
-      margin: 0;
+    html, body {
+      margin: 0; padding: 0;
       font-family: 'Segoe UI', sans-serif;
-      background: linear-gradient(-45deg, #1b1b1b, #2a0c0c, #1a1a2e);
-      background-size: 600% 600%;
-      animation: backgroundMove 15s ease infinite;
-      color: white;
+      background: linear-gradient(135deg, #1e1e2f, #2b2b40);
       overflow: hidden;
     }
-    @keyframes backgroundMove {
-      0% {background-position: 0% 50%;}
-      50% {background-position: 100% 50%;}
-      100% {background-position: 0% 50%;}
+    body::before {
+      content: '';
+      position: fixed;
+      width: 100%; height: 100%;
+      background: radial-gradient(circle at center, #444cf7aa 0%, #000 100%);
+      animation: waveAnim 15s ease-in-out infinite alternate;
+      z-index: -2;
+    }
+    @keyframes waveAnim {
+      0% { transform: scale(1.02); }
+      100% { transform: scale(1.08) rotate(1deg); }
     }
     .login-container {
-      width: 100%;
-      height: 100vh;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      backdrop-filter: blur(6px);
-    }
-    .login-box {
-      background: var(--blur);
-      padding: 30px;
+      width: 400px;
+      max-width: 90%;
+      margin: 80px auto;
+      background: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(20px);
+      border: 2px solid rgba(255,255,255,0.2);
       border-radius: 20px;
-      border: 2px solid var(--gold);
-      width: 90%;
-      max-width: 400px;
+      padding: 30px;
+      color: #fff;
       position: relative;
-      box-shadow: 0 0 30px rgba(255, 255, 255, 0.1);
-      text-align: center;
-      animation: fadeIn 0.6s ease;
+      animation: fadeInUp 1s ease forwards;
     }
-    @keyframes fadeIn {
-      from {opacity: 0; transform: scale(0.95);}
-      to {opacity: 1; transform: scale(1);}
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(30px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .rgb-bar {
+      position: absolute;
+      bottom: -5px;
+      left: 0;
+      height: 5px;
+      width: 100%;
+      background: linear-gradient(270deg, red, orange, yellow, green, blue, indigo, violet);
+      background-size: 400% 400%;
+      animation: rgbFlow 10s linear infinite;
+    }
+    @keyframes rgbFlow {
+      0% { background-position: 0% 50%; }
+      100% { background-position: 100% 50%; }
     }
     h2 {
-      margin-bottom: 15px;
-      font-weight: 600;
+      text-align: center;
+      margin-bottom: 25px;
     }
-    input, button, select {
+    input, button {
       width: 100%;
-      padding: 10px;
       margin: 8px 0;
-      border-radius: 8px;
+      padding: 12px;
       border: none;
+      border-radius: 10px;
       font-size: 16px;
     }
-    input:required {
-      border-left: 4px solid crimson;
+    input {
+      background: rgba(255,255,255,0.1);
+      color: #fff;
     }
-    button {
-      background: var(--gold);
-      color: black;
-      font-weight: bold;
+    input:focus {
+      outline: 2px solid #7fffd4;
+    }
+    .error {
+      color: #ff7b7b;
+      font-size: 14px;
+      margin: 5px 0;
+    }
+    .toggle-link {
+      text-align: center;
+      margin-top: 15px;
       cursor: pointer;
-      transition: all 0.3s ease;
+      color: #7fffd4;
     }
-    button:hover {
-      background: white;
-      color: black;
-    }
-    .notifier {
+    .notification {
       position: fixed;
       top: 20px;
       right: 20px;
-      min-width: 220px;
+      background: #222;
+      color: #fff;
       padding: 10px 20px;
       border-radius: 10px;
-      font-size: 14px;
-      font-weight: bold;
-      animation: pulse 2s infinite ease-in-out;
+      box-shadow: 0 0 20px rgba(255,255,255,0.2);
+      animation: slideIn 0.5s ease, rgbNotif 5s infinite linear;
     }
-    .success { background: rgba(0,255,0,0.2); border-left: 4px solid lime; color: lime; }
-    .error { background: rgba(255,0,0,0.2); border-left: 4px solid red; color: red; }
-    .info { background: rgba(0,204,255,0.2); border-left: 4px solid cyan; color: cyan; }
-    @keyframes pulse {
-      0% {box-shadow: 0 0 8px rgba(255,255,255,0.2);}
-      50% {box-shadow: 0 0 14px rgba(255,255,255,0.5);}
-      100% {box-shadow: 0 0 8px rgba(255,255,255,0.2);}
+    @keyframes slideIn {
+      from { opacity: 0; transform: translateX(100px); }
+      to { opacity: 1; transform: translateX(0); }
     }
-    .rgb-line {
-      position: fixed;
-      bottom: 0;
-      left: 0;
-      width: 100%;
-      height: 4px;
-      background: linear-gradient(90deg, red, orange, yellow, green, cyan, blue, violet);
-      background-size: 300% 100%;
-      animation: rgbMove 6s linear infinite;
-    }
-    @keyframes rgbMove {
-      0% {background-position: 0%;}
-      100% {background-position: 100%;}
-    }
-    .meta-info {
-      position: fixed;
-      bottom: 8px;
-      right: 10px;
-      font-size: 12px;
-      color: #aaa;
-    }
-    .strength {
-      height: 6px;
-      border-radius: 4px;
-      margin-top: -5px;
-      background: gray;
-      transition: background 0.3s ease;
+    @keyframes rgbNotif {
+      0% { box-shadow: 0 0 10px red; }
+      20% { box-shadow: 0 0 10px orange; }
+      40% { box-shadow: 0 0 10px yellow; }
+      60% { box-shadow: 0 0 10px green; }
+      80% { box-shadow: 0 0 10px blue; }
+      100% { box-shadow: 0 0 10px violet; }
     }
   </style>
 </head>
 <body>
-  <div class="login-container">
-    <div class="login-box">
-      <h2 id="formTitle">Login</h2>
-      <input type="email" id="email" placeholder="Email*" required />
-      <input type="password" id="password" placeholder="Password*" required oninput="checkStrength()" />
-      <div class="strength" id="strengthBar"></div>
-      <div id="captchaContainer"></div>
-      <button onclick="submitForm()">Login</button>
-      <p style="font-size: 12px; margin-top: 10px;">
-        <a href="#" onclick="toggleMode()">Switch to Register</a> | 
-        <a href="#" onclick="forgotPassword()">Forgot Password?</a>
-      </p>
-    </div>
+  <div class="login-container" id="loginBox">
+    <h2 id="formTitle">Login</h2>
+    <input type="email" id="email" placeholder="Email *" required>
+    <input type="password" id="password" placeholder="Password *" required>
+    <div id="extraField" style="display:none;"></div>
+    <button onclick="handleSubmit()">Login</button>
+    <div class="toggle-link" onclick="toggleForm()">Belum punya akun? Daftar</div>
+    <div class="rgb-bar"></div>
   </div>
-  <div class="rgb-line"></div>
-  <div class="meta-info">v3.2 | ID: <span id="uid"></span></div>
-  <div id="notifier" class="notifier" style="display:none;"></div>
 
   <script>
     let isLogin = true;
-    const emailField = document.getElementById("email");
-    const passwordField = document.getElementById("password");
-    const notifier = document.getElementById("notifier");
-    const formTitle = document.getElementById("formTitle");
-    const uidDisplay = document.getElementById("uid");
 
-    function showNotif(msg, type='info') {
-      notifier.innerText = msg;
-      notifier.className = `notifier ${type}`;
-      notifier.style.display = "block";
-      navigator.vibrate?.(type === 'error' ? 200 : 80);
-      setTimeout(() => notifier.style.display = "none", 3000);
-    }
+    window.onload = () => {
+      const lastUser = localStorage.getItem('activeUser');
+      if (lastUser) showNotif("Akun terakhir: " + lastUser, "info");
+    };
 
-    function toggleMode() {
+    function toggleForm() {
       isLogin = !isLogin;
-      formTitle.innerText = isLogin ? "Login" : "Register";
+      document.getElementById("formTitle").innerText = isLogin ? "Login" : "Register";
       document.querySelector("button").innerText = isLogin ? "Login" : "Register";
+      document.querySelector(".toggle-link").innerText = isLogin ? "Belum punya akun? Daftar" : "Sudah punya akun? Login";
     }
 
-    function forgotPassword() {
-      showNotif("Password reset is not available offline.", "info");
+    function showNotif(msg, type) {
+      const notif = document.createElement("div");
+      notif.className = "notification";
+      notif.innerText = msg;
+      document.body.appendChild(notif);
+      navigator.vibrate?.([50, 30, 50]);
+      setTimeout(() => notif.remove(), 4000);
     }
 
-    function checkStrength() {
-      const pass = passwordField.value;
-      const bar = document.getElementById("strengthBar");
-      bar.style.background = pass.length < 6 ? "red" :
-                             pass.length < 10 ? "orange" : "lime";
-    }
+    function handleSubmit() {
+      const email = document.getElementById("email").value.trim();
+      const password = document.getElementById("password").value.trim();
 
-    function generateUID() {
-      return "ID" + Math.random().toString(36).substring(2, 10).toUpperCase();
-    }
-
-    function logActivity(type) {
-      const logs = JSON.parse(localStorage.getItem("logs") || "[]");
-      logs.push({ time: new Date().toLocaleString(), type });
-      localStorage.setItem("logs", JSON.stringify(logs));
-    }
-
-    function generateCaptcha() {
-      const num1 = Math.floor(Math.random() * 9) + 1;
-      const num2 = Math.floor(Math.random() * 9) + 1;
-      const answer = num1 + num2;
-      const container = document.getElementById("captchaContainer");
-      container.innerHTML = `
-        <label style="font-size:12px;">What is ${num1} + ${num2}? *</label>
-        <input type="number" id="captcha" required />
-      `;
-      return answer;
-    }
-
-    let captchaAnswer = generateCaptcha();
-
-    function submitForm() {
-      const email = emailField.value.trim();
-      const pass = passwordField.value.trim();
-      const captchaInput = document.getElementById("captcha")?.value;
-
-      if (!email || !pass || captchaInput == "") {
-        showNotif("Please fill all fields", "error");
+      if (!email || !email.includes("@") || !password) {
+        showNotif("Isi semua field dengan benar!", "error");
         return;
       }
-      if (!email.includes("@") || !email.includes(".")) {
-        showNotif("Invalid email", "error");
-        return;
-      }
-      if (parseInt(captchaInput) !== captchaAnswer) {
-        showNotif("CAPTCHA incorrect", "error");
-        captchaAnswer = generateCaptcha(); // regenerate
-        return;
-      }
-
-      let users = JSON.parse(localStorage.getItem("users") || "{}");
 
       if (isLogin) {
-        if (!users[email] || users[email].pass !== pass) {
-          showNotif("Login failed", "error");
-          logActivity("Login failed");
+        const userData = JSON.parse(localStorage.getItem(email));
+        if (!userData || userData.password !== password) {
+          showNotif("Login gagal! Email atau password salah.", "error");
+          logActivity(email, false);
           return;
         }
-        showNotif("Login successful", "success");
-        logActivity("Login success");
-        uidDisplay.innerText = users[email].uid;
-        promptOTP();
+        showNotif("Login berhasil! Selamat datang.", "success");
+        localStorage.setItem("activeUser", email);
+        logActivity(email, true);
+        playSuccess();
       } else {
-        if (users[email]) {
-          showNotif("User already exists", "error");
+        if (password.length < 6) {
+          showNotif("Password minimal 6 karakter!", "error");
           return;
         }
-        const uid = generateUID();
-        users[email] = { pass, uid };
-        localStorage.setItem("users", JSON.stringify(users));
-        showNotif("Account created!", "success");
-        logActivity("Registered");
-        uidDisplay.innerText = uid;
-        promptOTP();
+        localStorage.setItem(email, JSON.stringify({ email, password }));
+        showNotif("Akun berhasil dibuat!", "success");
+        logActivity(email, true);
+        localStorage.setItem("activeUser", email);
       }
     }
 
-    function promptOTP() {
-      setTimeout(() => {
-        const code = prompt("Enter 6-digit code sent to your device (dummy: 123456):");
-        if (code === "123456") {
-          showNotif("2FA Verified!", "success");
-        } else {
-          showNotif("Wrong OTP", "error");
-        }
-      }, 500);
+    function logActivity(email, status) {
+      const logs = JSON.parse(localStorage.getItem("loginLogs") || "[]");
+      logs.push({ email, time: new Date().toISOString(), status });
+      localStorage.setItem("loginLogs", JSON.stringify(logs));
+    }
+
+    function playSuccess() {
+      const audio = new Audio("https://cdn.pixabay.com/download/audio/2022/10/03/audio_3703b4bf44.mp3?filename=game-notification-199953.mp3");
+      audio.play();
     }
   </script>
 </body>
