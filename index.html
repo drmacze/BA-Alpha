@@ -5,119 +5,109 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Bloodline: Ashaterra</title>
   <style>
-    :root {
-      --color-primary: #2b0e0e;
-      --color-accent: #c42b2b;
-      --color-text: #fff;
-      --font-main: 'Segoe UI', sans-serif;
-    }
     body {
       margin: 0;
-      font-family: var(--font-main);
-      background: linear-gradient(to bottom, #1e0e0e, #000);
-      color: var(--color-text);
+      font-family: 'Segoe UI', sans-serif;
+      background: radial-gradient(ellipse at center, #1a0d0d, #000);
+      color: #fff;
       overflow-x: hidden;
-    }
-    .container {
-      max-width: 480px;
-      margin: auto;
-      padding: 30px 20px;
-      text-align: center;
     }
     .step {
       display: none;
-      animation: fadeIn 0.5s ease;
+      flex-direction: column;
+      align-items: center;
+      padding: 30px;
     }
     .step.active {
-      display: block;
+      display: flex;
     }
     h1, h2 {
-      color: #ffebcd;
+      margin: 0 0 20px;
+      text-align: center;
     }
     input, select {
-      width: 90%;
       padding: 10px;
-      margin: 10px auto;
-      display: block;
+      margin: 8px;
       border: none;
-      border-radius: 6px;
+      border-radius: 5px;
+      width: 250px;
+      font-size: 14px;
     }
     .btn {
-      padding: 12px 24px;
-      margin: 10px;
-      background: linear-gradient(135deg, #a31111, #f33);
-      color: #fff;
+      padding: 12px 25px;
+      background: maroon;
       border: none;
-      border-radius: 8px;
+      border-radius: 5px;
+      margin: 15px;
       cursor: pointer;
+      color: #fff;
+      font-weight: bold;
       transition: 0.3s;
     }
     .btn:hover {
-      background: #ff4444;
+      background: #a00;
       transform: scale(1.05);
-    }
-    .rgb-line {
-      height: 4px;
-      background: linear-gradient(90deg, red, orange, yellow, green, cyan, blue, violet, red);
-      background-size: 400% 400%;
-      animation: rgbLoop 4s linear infinite;
-      margin-top: 30px;
-    }
-    @keyframes rgbLoop {
-      0% { background-position: 0% 50%; }
-      100% { background-position: 100% 50%; }
     }
     .notif {
       position: fixed;
       top: 20px;
       right: 20px;
-      background: rgba(40,40,40,0.9);
-      padding: 12px 20px;
+      background: #222;
+      color: #fff;
+      padding: 12px;
       border-left: 4px solid crimson;
-      border-radius: 8px;
-      font-size: 14px;
-      opacity: 0;
-      transition: opacity 0.4s ease;
+      border-radius: 5px;
+      display: none;
     }
     .notif.show {
-      opacity: 1;
+      display: block;
+      animation: fadein 0.5s;
     }
     footer {
-      color: #888;
-      text-align: right;
+      position: fixed;
+      bottom: 10px;
+      right: 10px;
       font-size: 12px;
-      padding: 10px;
+      color: #888;
     }
-    .hidden { display: none; }
-    .tap-screen {
-      position: absolute;
-      top: 40%;
+    #avatarGrid img {
+      width: 70px;
+      border-radius: 50%;
+      margin: 5px;
+      cursor: pointer;
+      transition: 0.2s;
+    }
+    #avatarGrid img:hover {
+      transform: scale(1.1);
+    }
+    #avatarGrid img.selected {
+      border: 2px solid lime;
+    }
+    @keyframes fadein {
+      from { opacity: 0; transform: translateY(-10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .rgb-bar {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      height: 5px;
       width: 100%;
-      text-align: center;
-      font-size: 24px;
-      opacity: 0.8;
-      animation: pulse 1.5s infinite alternate;
+      background: linear-gradient(90deg, red, orange, yellow, green, cyan, blue, violet);
+      animation: rgbMove 4s linear infinite;
     }
-    @keyframes pulse {
-      from { transform: scale(1); opacity: 0.8; }
-      to { transform: scale(1.1); opacity: 1; }
+    @keyframes rgbMove {
+      from { background-position: 0 0; }
+      to { background-position: 200% 0; }
     }
   </style>
 </head>
 <body>
-  <div id="splash">
-    <div class="tap-screen">Tap to Start</div>
-    <div class="rgb-line"></div>
-  </div>
-
-  <div class="container hidden" id="mainContent">
-    <!-- Steps akan muncul di sini -->
-
+  <div id="mainContent">
     <!-- Step: Login/Register -->
     <div class="step active" id="step-login">
       <h1>Bloodline: Ashaterra</h1>
       <h2 id="formTitle">Login</h2>
-
       <input type="email" id="email" placeholder="Email" />
       <input type="password" id="password" placeholder="Password" />
       <input type="text" id="pin" maxlength="4" placeholder="PIN (4-digit)" />
@@ -131,39 +121,36 @@
         <option>Other</option>
       </select>
       <input type="date" id="dob" />
-
       <button class="btn" onclick="handleAuth()">Login</button>
       <button class="btn" onclick="toggleAuth()">Switch to Register</button>
       <p onclick="forgotPass()" style="color:#aaa; cursor:pointer;">Forgot Password?</p>
-
-      <div id="notif" class="notif"></div>
       <footer>
-        v3.0 - ID: <span id="userId">-</span>
+        v3.0 • ID: <span id="userId">-</span>
       </footer>
     </div>
 
-    <!-- Step: Avatar Selection -->
+    <!-- Step: Avatar -->
     <div class="step" id="step-avatar">
       <h2>Select Your Avatar</h2>
       <div id="avatarGrid"></div>
       <button class="btn" onclick="goToStep('step-role')">Next</button>
     </div>
 
-    <!-- Step: Role Selection -->
+    <!-- Step: Role -->
     <div class="step" id="step-role">
-      <h2>Choose Your Role</h2>
+      <h2>Choose Role</h2>
       <select id="role">
-        <option>Pyromancer (Fire)</option>
-        <option>Shadowblade (Dark)</option>
-        <option>Druid (Nature)</option>
-        <option>Chronoguard (Time)</option>
-        <option>Celestian (Light)</option>
-        <option>Ashfallen (Void)</option>
+        <option>Pyromancer</option>
+        <option>Shadowblade</option>
+        <option>Druid</option>
+        <option>Chronoguard</option>
+        <option>Celestian</option>
+        <option>Ashfallen</option>
       </select>
       <button class="btn" onclick="goToStep('step-gender')">Next</button>
     </div>
 
-    <!-- Step: Gender Selection -->
+    <!-- Step: Gender -->
     <div class="step" id="step-gender">
       <h2>Select Gender</h2>
       <select id="gender">
@@ -174,10 +161,10 @@
       <button class="btn" onclick="goToStep('step-body')">Next</button>
     </div>
 
-    <!-- Step: Body & Details -->
+    <!-- Step: Appearance -->
     <div class="step" id="step-body">
       <h2>Customize Appearance</h2>
-      <input type="text" id="eyes" placeholder="Eye Type (e.g. Sharp)" />
+      <input type="text" id="eyes" placeholder="Eye Type" />
       <input type="text" id="hair" placeholder="Hair Style" />
       <input type="color" id="eyeColor" value="#552200" />
       <input type="color" id="hairColor" value="#222222" />
@@ -187,9 +174,9 @@
       <button class="btn" onclick="goToStep('step-gear')">Next</button>
     </div>
 
-    <!-- Step: Gear & Outfit -->
+    <!-- Step: Gear -->
     <div class="step" id="step-gear">
-      <h2>Choose Gear & Outfit</h2>
+      <h2>Choose Gear</h2>
       <input type="text" id="top" placeholder="Top (e.g. Hoodie)" />
       <input type="text" id="bottom" placeholder="Bottom (e.g. Jeans)" />
       <input type="text" id="footwear" placeholder="Footwear" />
@@ -197,10 +184,10 @@
       <button class="btn" onclick="goToStep('step-pact')">Continue</button>
     </div>
 
-    <!-- Step: Blood Pact System -->
+    <!-- Step: Pact -->
     <div class="step" id="step-pact">
       <h2>Blood Pact</h2>
-      <p>Do you wish to forge a Blood Pact for forbidden power?</p>
+      <p>Choose a pact for forbidden power:</p>
       <select id="pact">
         <option value="none">No Pact</option>
         <option value="curse-of-flame">Curse of Flame</option>
@@ -210,137 +197,125 @@
       <button class="btn" onclick="finalizeCharacter()">Finalize Character</button>
     </div>
 
-    <!-- Step: Welcome / Result -->
+    <!-- Final Step -->
     <div class="step" id="step-result">
       <h2>Welcome, <span id="resultName"></span>!</h2>
-      <p>You have received:</p>
+      <p>You received:</p>
       <ul>
         <li>Starter Pack: 1000 Gold</li>
-        <li>Gear: Traveler's Cloak</li>
-        <li>Pact Status: <span id="pactStatus"></span></li>
+        <li>Traveler's Cloak</li>
+        <li>Pact: <span id="pactStatus"></span></li>
       </ul>
-      <div class="btn" onclick="alert('Main menu soon...')">Proceed to Main Menu</div>
+      <button class="btn" onclick="alert('Next: Entering Ashaterra...')">Enter World</button>
     </div>
   </div>
 
   <div id="notif" class="notif"></div>
-<script>
-  const steps = document.querySelectorAll('.step');
-  const splash = document.getElementById("splash");
-  const mainContent = document.getElementById("mainContent");
-  const notif = document.getElementById("notif");
+  <div class="rgb-bar"></div>
 
-  let isLogin = true;
+  <script>
+    const steps = document.querySelectorAll('.step');
+    const notif = document.getElementById("notif");
+    let isLogin = true;
 
-  document.body.addEventListener("click", () => {
-    if (!mainContent.classList.contains("hidden")) return;
-    splash.classList.add("hidden");
-    mainContent.classList.remove("hidden");
-  }, { once: true });
-
-  function goToStep(id) {
-    steps.forEach(s => s.classList.remove("active"));
-    document.getElementById(id).classList.add("active");
-  }
-
-  function toggleAuth() {
-    isLogin = !isLogin;
-    document.getElementById("formTitle").innerText = isLogin ? "Login" : "Register";
-    document.querySelector(".btn").innerText = isLogin ? "Login" : "Register";
-  }
-
-  function notify(msg, success = false) {
-    notif.innerText = msg;
-    notif.style.borderLeft = success ? '4px solid lime' : '4px solid crimson';
-    notif.classList.add("show");
-    setTimeout(() => notif.classList.remove("show"), 4000);
-    navigator.vibrate?.(success ? 50 : [100, 50, 100]);
-  }
-
-  function handleAuth() {
-    const email = document.getElementById("email").value;
-    const pass = document.getElementById("password").value;
-    const pin = document.getElementById("pin").value;
-    const dob = new Date(document.getElementById("dob").value);
-    const captcha = document.getElementById("captcha").value;
-    const country = document.getElementById("country").value;
-
-    const age = new Date().getFullYear() - dob.getFullYear();
-    const id = email + "::" + pass;
-
-    if (!email || !pass || !pin || !captcha || !dob || !country)
-      return notify("Please fill all fields.");
-    if (pin.length !== 4) return notify("PIN must be 4 digits.");
-    if (captcha.toUpperCase() !== "74FDK") return notify("CAPTCHA incorrect.");
-    if (age < 13) return notify("You must be 13+ to register.");
-
-    if (isLogin) {
-      const user = localStorage.getItem(id);
-      if (!user) return notify("Account not found.");
-      notify("Login successful!", true);
-      setTimeout(() => {
-        document.getElementById("userId").innerText = id.split("::")[0];
-        goToStep("step-avatar");
-        createAvatars();
-      }, 1000);
-    } else {
-      if (localStorage.getItem(id)) return notify("Account already exists.");
-      const userData = JSON.stringify({ email, pass, pin, dob, country });
-      localStorage.setItem(id, userData);
-      notify("Account registered!", true);
+    function goToStep(id) {
+      steps.forEach(s => s.classList.remove("active"));
+      document.getElementById(id).classList.add("active");
     }
-  }
 
-  function forgotPass() {
-    const email = document.getElementById("email").value;
-    if (!email) return notify("Enter your email.");
-    notify("Reset link (simulated) sent to: " + email, true);
-  }
+    function toggleAuth() {
+      isLogin = !isLogin;
+      document.getElementById("formTitle").innerText = isLogin ? "Login" : "Register";
+      document.querySelector("button").innerText = isLogin ? "Login" : "Register";
+    }
 
-  function createAvatars() {
-    const grid = document.getElementById("avatarGrid");
-    grid.innerHTML = "";
-    for (let i = 1; i <= 12; i++) {
-      const img = document.createElement("img");
-      img.src = `https://api.dicebear.com/7.x/adventurer/svg?seed=${i}`;
-      img.style.width = "70px";
-      img.style.margin = "5px";
-      img.style.border = "2px solid transparent";
-      img.style.borderRadius = "50%";
-      img.onclick = () => {
-        document.querySelectorAll("#avatarGrid img").forEach(x => x.style.border = "2px solid transparent");
-        img.style.border = "2px solid lime";
-        localStorage.setItem("avatar", img.src);
+    function notify(msg, success = false) {
+      notif.innerText = msg;
+      notif.style.borderLeft = success ? '4px solid lime' : '4px solid crimson';
+      notif.classList.add("show");
+      setTimeout(() => notif.classList.remove("show"), 4000);
+      navigator.vibrate?.(success ? 50 : [100, 50, 100]);
+    }
+
+    function handleAuth() {
+      const email = email.value.trim();
+      const pass = password.value.trim();
+      const pin = pin.value.trim();
+      const dob = new Date(dobInput.value);
+      const captchaVal = captcha.value.trim().toUpperCase();
+      const country = country.value;
+      const age = new Date().getFullYear() - dob.getFullYear();
+      const id = email + "::" + pass;
+
+      if (!email || !pass || !pin || !captchaVal || !dob || !country)
+        return notify("Please fill all fields.");
+      if (pin.length !== 4) return notify("PIN must be 4 digits.");
+      if (captchaVal !== "74FDK") return notify("CAPTCHA incorrect.");
+      if (age < 13) return notify("You must be 13+ to register.");
+
+      if (isLogin) {
+        const user = localStorage.getItem(id);
+        if (!user) return notify("Account not found.");
+        localStorage.setItem("activeUser", id);
+        document.getElementById("userId").innerText = email;
+        notify("Login successful!", true);
+        setTimeout(() => { goToStep("step-avatar"); createAvatars(); }, 800);
+      } else {
+        if (localStorage.getItem(id)) return notify("Account already exists.");
+        localStorage.setItem(id, JSON.stringify({ email, pass, pin, dob, country }));
+        localStorage.setItem("activeUser", id);
+        document.getElementById("userId").innerText = email;
+        notify("Account created!", true);
+        setTimeout(() => { goToStep("step-avatar"); createAvatars(); }, 800);
+      }
+    }
+
+    function forgotPass() {
+      const email = document.getElementById("email").value;
+      if (!email) return notify("Enter your email.");
+      notify("Reset link (simulated) sent to " + email, true);
+    }
+
+    function createAvatars() {
+      const grid = document.getElementById("avatarGrid");
+      grid.innerHTML = "";
+      for (let i = 1; i <= 8; i++) {
+        const img = document.createElement("img");
+        img.src = `https://api.dicebear.com/7.x/adventurer/svg?seed=${i}`;
+        img.onclick = () => {
+          document.querySelectorAll("#avatarGrid img").forEach(x => x.classList.remove("selected"));
+          img.classList.add("selected");
+          localStorage.setItem("avatar", img.src);
+        };
+        grid.appendChild(img);
+      }
+    }
+
+    function finalizeCharacter() {
+      const pact = document.getElementById("pact").value;
+      const role = document.getElementById("role").value;
+      const gender = document.getElementById("gender").value;
+      const details = {
+        eyes: eyes.value,
+        hair: hair.value,
+        eyeColor: eyeColor.value,
+        hairColor: hairColor.value,
+        height: height.value,
+        tattoo: tattoo.value,
+        tattooPlace: tattooPlace.value,
+        top: top.value,
+        bottom: bottom.value,
+        footwear: footwear.value,
+        accessory: accessory.value,
+        gender, role, pact,
+        avatar: localStorage.getItem("avatar")
       };
-      grid.appendChild(img);
+      localStorage.setItem("character", JSON.stringify(details));
+      notify("Character created!", true);
+      document.getElementById("resultName").innerText = role;
+      document.getElementById("pactStatus").innerText = pact.replaceAll("-", " ");
+      goToStep("step-result");
     }
-  }
-
-  function finalizeCharacter() {
-    const pact = document.getElementById("pact").value;
-    const role = document.getElementById("role").value;
-    const gender = document.getElementById("gender").value;
-    const details = {
-      eyes: document.getElementById("eyes").value,
-      hair: document.getElementById("hair").value,
-      eyeColor: document.getElementById("eyeColor").value,
-      hairColor: document.getElementById("hairColor").value,
-      height: document.getElementById("height").value,
-      tattoo: document.getElementById("tattoo").value,
-      tattooPlace: document.getElementById("tattooPlace").value,
-      top: document.getElementById("top").value,
-      bottom: document.getElementById("bottom").value,
-      footwear: document.getElementById("footwear").value,
-      accessory: document.getElementById("accessory").value,
-      gender, role, pact,
-      avatar: localStorage.getItem("avatar")
-    };
-    localStorage.setItem("character", JSON.stringify(details));
-    notify("Character created!", true);
-    document.getElementById("resultName").innerText = role;
-    document.getElementById("pactStatus").innerText = pact.replaceAll("-", " ");
-    goToStep("step-result");
-  }
-</script>
+  </script>
 </body>
 </html>
