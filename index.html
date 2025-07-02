@@ -5,87 +5,100 @@
   <title>Bloodline Login</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
-    html, body {
+    :root {
+      --primary: #d62828;
+      --bg: #0a0a0a;
+      --glass: rgba(255,255,255,0.05);
+      --shadow: 0 8px 20px rgba(0,0,0,0.4);
+    }
+
+    * {
+      box-sizing: border-box;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    }
+
+    body {
       margin: 0;
       padding: 0;
-      font-family: 'Segoe UI', sans-serif;
-      background: #0a0a0a;
-      overflow: hidden;
+      background: var(--bg);
       height: 100vh;
-    }
-
-    /* Background wave + blur */
-    .background {
-      position: absolute;
-      top: 0; left: 0; width: 100%; height: 100%;
-      background: radial-gradient(circle at 20% 30%, #1a1a1a 10%, transparent 40%), 
-                  radial-gradient(circle at 80% 70%, #333 10%, transparent 40%);
-      backdrop-filter: blur(8px);
-      z-index: 0;
-    }
-
-    .container {
-      position: relative;
-      z-index: 2;
       display: flex;
-      justify-content: center;
       align-items: center;
-      height: 100vh;
-    }
-
-    .form-box {
-      width: 340px;
-      background: rgba(0,0,0,0.6);
-      padding: 24px;
-      border-radius: 12px;
-      box-shadow: 0 0 15px rgba(255,255,255,0.1);
-      backdrop-filter: blur(8px);
-    }
-
-    h2 {
-      text-align: center;
-      margin-bottom: 20px;
+      justify-content: center;
+      overflow: hidden;
       color: #fff;
     }
 
+    .background {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      background: radial-gradient(circle at 30% 30%, #1c1c1c 20%, transparent 60%),
+                  radial-gradient(circle at 70% 70%, #2a2a2a 20%, transparent 60%);
+      backdrop-filter: blur(12px);
+      z-index: 0;
+    }
+
+    .form-container {
+      position: relative;
+      background: var(--glass);
+      padding: 30px;
+      border-radius: 18px;
+      box-shadow: var(--shadow);
+      width: 360px;
+      z-index: 2;
+    }
+
+    .form-container h2 {
+      margin-bottom: 20px;
+      text-align: center;
+      font-size: 1.5em;
+    }
+
     label {
+      display: block;
+      margin: 10px 0 5px;
       font-size: 14px;
       color: #ccc;
     }
 
     label span {
-      color: crimson;
+      color: var(--primary);
     }
 
     input {
       width: 100%;
       padding: 12px;
-      margin: 6px 0 14px 0;
       border: none;
-      border-radius: 6px;
-      background: #222;
-      color: #fff;
+      border-radius: 10px;
+      background: #111;
+      color: white;
+      font-size: 14px;
+      margin-bottom: 10px;
     }
 
     button {
       width: 100%;
       padding: 12px;
-      background: maroon;
+      background: var(--primary);
+      border: none;
+      border-radius: 10px;
       color: white;
       font-weight: bold;
-      border: none;
-      border-radius: 6px;
-      cursor: pointer;
-      transition: 0.2s ease;
+      font-size: 15px;
+      margin-top: 10px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+      transition: 0.2s;
     }
 
     button:hover {
-      background: #990000;
+      background: #a01818;
     }
 
-    .toggle {
-      margin-top: 10px;
+    .switch {
+      margin-top: 12px;
       text-align: center;
+      font-size: 13px;
       color: #aaa;
       cursor: pointer;
     }
@@ -94,51 +107,44 @@
       position: fixed;
       top: 20px;
       right: 20px;
-      background: #1a1a1a;
-      padding: 12px 16px;
-      border-left: 5px solid crimson;
-      border-radius: 6px;
+      background: #111;
+      padding: 14px 18px;
+      border-radius: 8px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.4);
+      font-size: 14px;
+      z-index: 999;
       display: none;
-      color: #fff;
-      box-shadow: 0 0 8px rgba(0,0,0,0.6);
-      animation: fadeIn 0.3s ease;
-      z-index: 99;
+      opacity: 0.95;
+      border-left: 5px solid var(--primary);
     }
 
     .notif.success {
       border-left-color: limegreen;
     }
 
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(-10px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-
     .footer {
       position: fixed;
-      bottom: 10px;
-      right: 12px;
+      bottom: 12px;
+      right: 14px;
       font-size: 12px;
-      color: #666;
-      z-index: 3;
+      color: #888;
     }
 
-    .rgb-line {
+    .rgb {
       position: fixed;
       bottom: 0;
       left: 0;
       width: 100%;
-      height: 5px;
+      height: 4px;
       background: linear-gradient(270deg, red, orange, yellow, green, blue, indigo, violet);
       background-size: 1400% 1400%;
-      animation: animateRGB 10s ease infinite;
-      z-index: 3;
+      animation: move 8s ease infinite;
     }
 
-    @keyframes animateRGB {
-      0% {background-position: 0% 50%;}
-      50% {background-position: 100% 50%;}
-      100% {background-position: 0% 50%;}
+    @keyframes move {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
     }
   </style>
 </head>
@@ -146,101 +152,101 @@
 
 <div class="background"></div>
 
-<div class="container">
-  <div class="form-box">
-    <h2 id="formTitle">Login</h2>
-    
-    <label>Email <span>*</span></label>
-    <input type="email" id="email" placeholder="Enter your email">
+<div class="form-container">
+  <h2 id="formTitle">Login</h2>
 
-    <label>Password <span>*</span></label>
-    <input type="password" id="password" placeholder="Enter password">
+  <label>Email <span>*</span></label>
+  <input type="email" id="email" placeholder="your@email.com">
 
-    <div id="registerOnly">
-      <label>PIN (4 digits) <span>*</span></label>
-      <input type="text" id="pin" maxlength="4" placeholder="Register only">
+  <label>Password <span>*</span></label>
+  <input type="password" id="password" placeholder="6+ characters">
 
-      <label>Date of Birth <span>*</span></label>
-      <input type="date" id="dob">
-    </div>
+  <div id="registerFields" style="display:none">
+    <label>PIN (4 digits) <span>*</span></label>
+    <input type="text" id="pin" maxlength="4">
 
-    <label>Captcha: <span id="captchaText">---- </span> <span>*</span></label>
-    <input type="text" id="captchaInput" placeholder="Enter CAPTCHA">
-
-    <button onclick="handleLogin()">Login</button>
-    <div class="toggle" onclick="toggleForm()">Switch to Register</div>
+    <label>Date of Birth <span>*</span></label>
+    <input type="date" id="dob">
   </div>
+
+  <label>CAPTCHA: <span id="captchaCode">---</span> <span>*</span></label>
+  <input type="text" id="captchaInput" placeholder="Enter CAPTCHA">
+
+  <button onclick="submitForm()">Login</button>
+  <div class="switch" onclick="toggleForm()">Switch to Register</div>
 </div>
 
 <div class="notif" id="notif"></div>
-<div class="footer">v1.1 - Local Auth | ID: <span id="playerId">-</span></div>
-<div class="rgb-line"></div>
+<div class="footer">Bloodline Ashaterra v1.2 | Local Auth</div>
+<div class="rgb"></div>
 
 <script>
   let isLogin = true;
-  const captchaText = document.getElementById('captchaText');
+  const captchaCode = document.getElementById("captchaCode");
   const notif = document.getElementById("notif");
-  const playerId = document.getElementById("playerId");
 
-  function randomCaptcha() {
+  function generateCaptcha() {
     const chars = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
-    let text = "";
-    for (let i = 0; i < 5; i++) text += chars.charAt(Math.floor(Math.random() * chars.length));
-    captchaText.innerText = text;
-    return text;
+    let result = "";
+    for (let i = 0; i < 5; i++) {
+      result += chars.charAt(Math.floor(Math.random() * chars.length));
+    }
+    captchaCode.textContent = result;
+    return result;
   }
 
-  let currentCaptcha = randomCaptcha();
+  let currentCaptcha = generateCaptcha();
 
   function toggleForm() {
     isLogin = !isLogin;
-    document.getElementById("formTitle").innerText = isLogin ? "Login" : "Register";
-    document.querySelector("button").innerText = isLogin ? "Login" : "Register";
-    document.getElementById("registerOnly").style.display = isLogin ? "none" : "block";
-    randomCaptcha();
+    document.getElementById("formTitle").textContent = isLogin ? "Login" : "Register";
+    document.querySelector("button").textContent = isLogin ? "Login" : "Register";
+    document.getElementById("registerFields").style.display = isLogin ? "none" : "block";
+    currentCaptcha = generateCaptcha();
   }
 
-  function showNotif(msg, success = false) {
-    notif.innerText = msg;
+  function notify(msg, success = false) {
+    notif.textContent = msg;
     notif.className = "notif" + (success ? " success" : "");
     notif.style.display = "block";
+    navigator.vibrate?.(success ? 20 : [60, 20, 60]);
     setTimeout(() => notif.style.display = "none", 4000);
-    navigator.vibrate?.(success ? 40 : [70, 30, 70]);
   }
 
-  function handleLogin() {
-    const email = document.getElementById("email").value.trim().toLowerCase();
-    const password = document.getElementById("password").value;
-    const pin = document.getElementById("pin").value;
-    const dob = document.getElementById("dob").value;
-    const captchaInput = document.getElementById("captchaInput").value.toUpperCase();
-    const userKey = `user::${email}`;
+  function validateEmail(email) {
+    const pattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return pattern.test(email);
+  }
 
-    if (!email || !password || captchaInput !== captchaText.innerText) {
-      showNotif("Invalid input or wrong CAPTCHA.");
-      return;
-    }
+  function submitForm() {
+    const email = document.getElementById("email").value.trim().toLowerCase();
+    const password = document.getElementById("password").value.trim();
+    const captchaInput = document.getElementById("captchaInput").value.trim().toUpperCase();
+    const pin = document.getElementById("pin").value.trim();
+    const dob = document.getElementById("dob").value;
+
+    if (!validateEmail(email)) return notify("Use a valid email.");
+    if (!password || captchaInput !== captchaCode.textContent) return notify("Check password or CAPTCHA");
+
+    const key = "user::" + email;
 
     if (isLogin) {
-      const userData = localStorage.getItem(userKey);
-      if (!userData) return showNotif("Account not found.");
-      const user = JSON.parse(userData);
-      if (user.password !== password) return showNotif("Wrong password.");
-      showNotif("Login successful!", true);
-      playerId.innerText = email;
+      const stored = localStorage.getItem(key);
+      if (!stored) return notify("Account not found.");
+      const data = JSON.parse(stored);
+      if (data.password !== password) return notify("Wrong password.");
+      notify("Login successful!", true);
     } else {
-      if (!pin || !dob || pin.length !== 4 || isNaN(pin)) return showNotif("PIN must be 4 digits.");
+      if (!pin || isNaN(pin) || pin.length !== 4) return notify("PIN must be 4 digits.");
       const age = new Date().getFullYear() - new Date(dob).getFullYear();
-      if (age < 13) return showNotif("Minimum age is 13+.");
-      if (localStorage.getItem(userKey)) return showNotif("Email already registered.");
-      const data = { email, password, pin, dob };
-      localStorage.setItem(userKey, JSON.stringify(data));
-      showNotif("Account created!", true);
-      playerId.innerText = email;
+      if (age < 13) return notify("Minimum age is 13+.");
+      if (localStorage.getItem(key)) return notify("Email already used.");
+      localStorage.setItem(key, JSON.stringify({ email, password, pin, dob }));
+      notify("Account created!", true);
     }
   }
 
-  // Initial
+  // Init toggle twice to ensure layout
   toggleForm(); toggleForm();
 </script>
 
