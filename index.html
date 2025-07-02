@@ -1,115 +1,261 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<title>Bloodline Auth</title>
-<meta name="viewport" content="width=device-width,initial-scale=1.0">
-<style>
-  :root {
-    --bg-dark: #1b0d0c;
-    --card-bg: rgba(255,255,255,0.05);
-    --accent: #A62828;
-    --text: #EEE;
-    --shadow: 0 8px 20px rgba(0,0,0,0.5);
-  }
-  *{box-sizing:border-box;font-family:sans-serif;margin:0;padding:0;}
-  body{background:var(--bg-dark);min-height:100vh;display:flex;align-items:center;justify-content:center;color:var(--text);}
-  .card{width:350px;padding:24px;border-radius:20px;background:var(--card-bg);backdrop-filter:blur(10px);box-shadow:var(--shadow);position:relative;overflow:hidden;}
-  h2{text-align:center;font-size:1.4em;margin-bottom:16px;color:var(--accent);}
-  .toggle{font-size:0.9em;color:#aaa;text-align:center;cursor:pointer;margin-bottom:16px;}
-  .step{display:none;animation:fadeIn 0.4s;}
-  .step.active{display:block;}
-  label{display:block;margin:10px 0 4px;font-size:0.85em;}
-  input{width:100%;padding:12px;border:none;border-radius:8px;background:#2c1f1d;color:white;font-size:1em;transition:box-shadow .3s;}
-  input:focus{outline:none;box-shadow:0 0 8px var(--accent);}
-  .btn{width:100%;padding:12px;margin-top:16px;background:var(--accent);border:none;border-radius:8px;color:white;font-size:1em;cursor:pointer;transition:background .3s;}
-  .btn:hover{background:#891f23;}
-  .notif{position:absolute;top:16px;right:16px;padding:8px 12px;background:#222;border-left:4px solid var(--accent);border-radius:6px;opacity:0;transform:translateY(-10px);transition:all .4s;}
-  .notif.show{opacity:1;transform:translateY(0);}
-  @keyframes fadeIn{from{opacity:0;}to{opacity:1;}}
-</style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Bloodline Ashaterra - Login</title>
+  <style>
+    :root {
+      --maroon: #4b1d1d;
+      --gold: #c9a444;
+      --bg: #121212;
+      --blur: rgba(18, 18, 18, 0.6);
+    }
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background: linear-gradient(-45deg, #1b1b1b, #2a0c0c, #1a1a2e);
+      background-size: 600% 600%;
+      animation: backgroundMove 15s ease infinite;
+      color: white;
+      overflow: hidden;
+    }
+    @keyframes backgroundMove {
+      0% {background-position: 0% 50%;}
+      50% {background-position: 100% 50%;}
+      100% {background-position: 0% 50%;}
+    }
+    .login-container {
+      width: 100%;
+      height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      backdrop-filter: blur(6px);
+    }
+    .login-box {
+      background: var(--blur);
+      padding: 30px;
+      border-radius: 20px;
+      border: 2px solid var(--gold);
+      width: 90%;
+      max-width: 400px;
+      position: relative;
+      box-shadow: 0 0 30px rgba(255, 255, 255, 0.1);
+      text-align: center;
+      animation: fadeIn 0.6s ease;
+    }
+    @keyframes fadeIn {
+      from {opacity: 0; transform: scale(0.95);}
+      to {opacity: 1; transform: scale(1);}
+    }
+    h2 {
+      margin-bottom: 15px;
+      font-weight: 600;
+    }
+    input, button, select {
+      width: 100%;
+      padding: 10px;
+      margin: 8px 0;
+      border-radius: 8px;
+      border: none;
+      font-size: 16px;
+    }
+    input:required {
+      border-left: 4px solid crimson;
+    }
+    button {
+      background: var(--gold);
+      color: black;
+      font-weight: bold;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+    button:hover {
+      background: white;
+      color: black;
+    }
+    .notifier {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      min-width: 220px;
+      padding: 10px 20px;
+      border-radius: 10px;
+      font-size: 14px;
+      font-weight: bold;
+      animation: pulse 2s infinite ease-in-out;
+    }
+    .success { background: rgba(0,255,0,0.2); border-left: 4px solid lime; color: lime; }
+    .error { background: rgba(255,0,0,0.2); border-left: 4px solid red; color: red; }
+    .info { background: rgba(0,204,255,0.2); border-left: 4px solid cyan; color: cyan; }
+    @keyframes pulse {
+      0% {box-shadow: 0 0 8px rgba(255,255,255,0.2);}
+      50% {box-shadow: 0 0 14px rgba(255,255,255,0.5);}
+      100% {box-shadow: 0 0 8px rgba(255,255,255,0.2);}
+    }
+    .rgb-line {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      height: 4px;
+      background: linear-gradient(90deg, red, orange, yellow, green, cyan, blue, violet);
+      background-size: 300% 100%;
+      animation: rgbMove 6s linear infinite;
+    }
+    @keyframes rgbMove {
+      0% {background-position: 0%;}
+      100% {background-position: 100%;}
+    }
+    .meta-info {
+      position: fixed;
+      bottom: 8px;
+      right: 10px;
+      font-size: 12px;
+      color: #aaa;
+    }
+    .strength {
+      height: 6px;
+      border-radius: 4px;
+      margin-top: -5px;
+      background: gray;
+      transition: background 0.3s ease;
+    }
+  </style>
 </head>
 <body>
-<div class="card">
-  <h2 id="title">Login</h2>
-  <div class="toggle" onclick="toggleMode()">Don't have account? Sign Up</div>
-
-  <div id="step-auth" class="step active">
-    <label>Email</label><input type="email" id="email" placeholder="you@example.com">
-    <label>Password</label><input type="password" id="password" placeholder="••••••••">
-    <button class="btn" onclick="doAuth()">Continue</button>
+  <div class="login-container">
+    <div class="login-box">
+      <h2 id="formTitle">Login</h2>
+      <input type="email" id="email" placeholder="Email*" required />
+      <input type="password" id="password" placeholder="Password*" required oninput="checkStrength()" />
+      <div class="strength" id="strengthBar"></div>
+      <div id="captchaContainer"></div>
+      <button onclick="submitForm()">Login</button>
+      <p style="font-size: 12px; margin-top: 10px;">
+        <a href="#" onclick="toggleMode()">Switch to Register</a> | 
+        <a href="#" onclick="forgotPassword()">Forgot Password?</a>
+      </p>
+    </div>
   </div>
+  <div class="rgb-line"></div>
+  <div class="meta-info">v3.2 | ID: <span id="uid"></span></div>
+  <div id="notifier" class="notifier" style="display:none;"></div>
 
-  <div id="step-register" class="step">
-    <label>PIN (4 digits)</label><input type="text" id="pin" maxlength="4" placeholder="1234">
-    <label>DOB</label><input type="date" id="dob">
-    <button class="btn" onclick="doRegister()">Register</button>
-  </div>
+  <script>
+    let isLogin = true;
+    const emailField = document.getElementById("email");
+    const passwordField = document.getElementById("password");
+    const notifier = document.getElementById("notifier");
+    const formTitle = document.getElementById("formTitle");
+    const uidDisplay = document.getElementById("uid");
 
-  <div id="step-verify" class="step">
-    <label>Enter verification code</label><input type="text" id="code" placeholder="123456">
-    <button class="btn" onclick="doVerify()">Verify</button>
-  </div>
-
-  <div id="step-success" class="step">
-    <h2>Welcome!</h2>
-    <p>You're logged in 🎉</p>
-  </div>
-
-  <div class="notif" id="notif"></div>
-</div>
-
-<script>
-  let isLogin = true;
-  let tempEmail;
-
-  function toggleMode(){
-    isLogin = !isLogin;
-    document.getElementById('title').innerText = isLogin?'Login':'Sign Up';
-    document.querySelector('.toggle').innerText = isLogin?'Don’t have account? Sign Up':'Already have account? Login';
-    showStep('step-auth');
-  }
-
-  function showStep(id){
-    document.querySelectorAll('.step').forEach(s=>s.classList.remove('active'));
-    document.getElementById(id).classList.add('active');
-  }
-
-  function notify(msg){
-    const n = document.getElementById('notif');
-    n.innerText = msg;
-    n.classList.add('show');
-    setTimeout(()=>n.classList.remove('show'),2500);
-  }
-
-  function doAuth(){
-    const email = emailInput.value.trim().toLowerCase();
-    const pass = password.value;
-    if(!email||!pass) return notify('Fill all fields.');
-    if(isLogin){
-      const key='user::'+email;
-      const u=localStorage.getItem(key);
-      if(!u||JSON.parse(u).password!==pass) return notify('Invalid credentials.');
-      showStep('step-success');
-    } else {
-      tempEmail=email;
-      showStep('step-register');
+    function showNotif(msg, type='info') {
+      notifier.innerText = msg;
+      notifier.className = `notifier ${type}`;
+      notifier.style.display = "block";
+      navigator.vibrate?.(type === 'error' ? 200 : 80);
+      setTimeout(() => notifier.style.display = "none", 3000);
     }
-  }
 
-  function doRegister(){
-    const pin=pin.value, dobval=dob.value;
-    if(pin.length!==4||isNaN(pin)||!dobval) return notify('Fill valid PIN & DOB.');
-    const key='user::'+tempEmail;
-    localStorage.setItem(key, JSON.stringify({email:tempEmail,password:password.value,pin, dob:dobval}));
-    showStep('step-verify');
-    notify('Verification code sent (demo: 123456)');
-  }
+    function toggleMode() {
+      isLogin = !isLogin;
+      formTitle.innerText = isLogin ? "Login" : "Register";
+      document.querySelector("button").innerText = isLogin ? "Login" : "Register";
+    }
 
-  function doVerify(){
-    if(code.value!=='123456') return notify('Wrong code.');
-    showStep('step-success');
-  }
-</script>
+    function forgotPassword() {
+      showNotif("Password reset is not available offline.", "info");
+    }
+
+    function checkStrength() {
+      const pass = passwordField.value;
+      const bar = document.getElementById("strengthBar");
+      bar.style.background = pass.length < 6 ? "red" :
+                             pass.length < 10 ? "orange" : "lime";
+    }
+
+    function generateUID() {
+      return "ID" + Math.random().toString(36).substring(2, 10).toUpperCase();
+    }
+
+    function logActivity(type) {
+      const logs = JSON.parse(localStorage.getItem("logs") || "[]");
+      logs.push({ time: new Date().toLocaleString(), type });
+      localStorage.setItem("logs", JSON.stringify(logs));
+    }
+
+    function generateCaptcha() {
+      const num1 = Math.floor(Math.random() * 9) + 1;
+      const num2 = Math.floor(Math.random() * 9) + 1;
+      const answer = num1 + num2;
+      const container = document.getElementById("captchaContainer");
+      container.innerHTML = `
+        <label style="font-size:12px;">What is ${num1} + ${num2}? *</label>
+        <input type="number" id="captcha" required />
+      `;
+      return answer;
+    }
+
+    let captchaAnswer = generateCaptcha();
+
+    function submitForm() {
+      const email = emailField.value.trim();
+      const pass = passwordField.value.trim();
+      const captchaInput = document.getElementById("captcha")?.value;
+
+      if (!email || !pass || captchaInput == "") {
+        showNotif("Please fill all fields", "error");
+        return;
+      }
+      if (!email.includes("@") || !email.includes(".")) {
+        showNotif("Invalid email", "error");
+        return;
+      }
+      if (parseInt(captchaInput) !== captchaAnswer) {
+        showNotif("CAPTCHA incorrect", "error");
+        captchaAnswer = generateCaptcha(); // regenerate
+        return;
+      }
+
+      let users = JSON.parse(localStorage.getItem("users") || "{}");
+
+      if (isLogin) {
+        if (!users[email] || users[email].pass !== pass) {
+          showNotif("Login failed", "error");
+          logActivity("Login failed");
+          return;
+        }
+        showNotif("Login successful", "success");
+        logActivity("Login success");
+        uidDisplay.innerText = users[email].uid;
+        promptOTP();
+      } else {
+        if (users[email]) {
+          showNotif("User already exists", "error");
+          return;
+        }
+        const uid = generateUID();
+        users[email] = { pass, uid };
+        localStorage.setItem("users", JSON.stringify(users));
+        showNotif("Account created!", "success");
+        logActivity("Registered");
+        uidDisplay.innerText = uid;
+        promptOTP();
+      }
+    }
+
+    function promptOTP() {
+      setTimeout(() => {
+        const code = prompt("Enter 6-digit code sent to your device (dummy: 123456):");
+        if (code === "123456") {
+          showNotif("2FA Verified!", "success");
+        } else {
+          showNotif("Wrong OTP", "error");
+        }
+      }, 500);
+    }
+  </script>
 </body>
 </html>
