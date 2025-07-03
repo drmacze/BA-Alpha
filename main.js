@@ -1,23 +1,17 @@
+document.getElementById('login-form').addEventListener('submit', function(e) {
+  e.preventDefault();
 
-window.addEventListener("DOMContentLoaded", () => {
-  gsap.from(".logo", { duration: 1, y: -40, opacity: 0 });
-  gsap.from(".login-container", { duration: 1.2, opacity: 0, scale: 0.9, delay: 0.5 });
+  // Transisi cinematic login
+  const wrapper = document.querySelector('.login-wrapper');
+  wrapper.style.transition = 'opacity 0.6s ease';
+  wrapper.style.opacity = 0;
 
-  document.getElementById("login-form").addEventListener("submit", function (e) {
-    e.preventDefault();
-    const email = this.elements[0].value;
-    const password = this.elements[1].value;
-    if (email && password) {
-      gsap.to(".login-container", {
-        opacity: 0,
-        scale: 1.2,
-        duration: 1,
-        onComplete: () => {
-          document.body.innerHTML = '<h1 style="text-align:center;margin-top:20%">Logging into Ashaterra...</h1>';
-        },
-      });
-    } else {
-      alert("Please enter valid credentials.");
-    }
-  });
+  setTimeout(() => {
+    document.body.innerHTML = `
+      <div style="text-align:center;color:#fff;font-size:1.5rem;margin-top:20%;">
+        <p>🔐 Authenticating...</p>
+        <p>🔮 Summoning world of <strong>Ashaterra</strong>...</p>
+      </div>
+    `;
+  }, 700);
 });
