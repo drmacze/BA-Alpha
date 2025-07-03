@@ -1,183 +1,39 @@
-function createNotif(msg,
-
-Tentu, Darma ⚔️  
-Berikut ini adalah **versi lengkap `index.html`** yang sudah **dijadikan satu file utuh** – mencakup semua **HTML**, **CSS**, dan **JavaScript (JS)** di dalamnya tanpa file terpisah.
-
----
-
-## ✅ `index.html` – Full Sinematik Login Page (Standalone)
-
-```html
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Ashaterra - Ghost of Yotei</title>
-  <style>
-    body {
-      margin: 0;
-      font-family: 'Kaisei Decol', serif;
-      background: #000;
-      color: #fff;
-      overflow: hidden;
-    }
-
-    .bg-video video {
-      position: fixed;
-      top: 0; left: 0;
-      width: 100vw; height: 100vh;
-      object-fit: cover;
-      z-index: -1;
-    }
-
-    .login-container {
-      position: absolute;
-      bottom: 10vh;
-      left: 50%;
-      transform: translateX(-50%);
-      background: rgba(0, 0, 0, 0.4);
-      padding: 2rem;
-      border-radius: 10px;
-      backdrop-filter: blur(10px);
-      text-align: center;
-    }
-
-    .logo {
-      width: 260px;
-      margin-bottom: 1rem;
-    }
-
-    form input {
-      width: 80%;
-      padding: 0.6rem;
-      margin: 0.5rem 0;
-      border: none;
-      border-radius: 5px;
-    }
-
-    form button {
-      margin-top: 1rem;
-      padding: 0.6rem 1.5rem;
-      border: none;
-      border-radius: 5px;
-      background: #222;
-      color: white;
-      cursor: pointer;
-    }
-
-    #notifContainer {
-      position: fixed;
-      top: 30px;
-      right: 30px;
-      z-index: 999;
-    }
-
-    .rgb-strip {
-      position: fixed;
-      bottom: 0;
-      left: 0;
-      height: 5px;
-      width: 100%;
-      background: linear-gradient(90deg, red, orange, yellow, green, cyan, blue, violet);
-      background-size: 400% 100%;
-      animation: flow 10s linear infinite;
-    }
-
-    @keyframes flow {
-      0% { background-position: 0% 0; }
-      100% { background-position: 400% 0; }
-    }
-  </style>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Ashaterra - Login</title>
+  <link rel="stylesheet" href="css/style.css" />
 </head>
 <body>
+  <video autoplay muted loop id="bg-video">
+    <source src="assets/video.mp4" type="video/mp4" />
+  </video>
 
-  <!-- Background Cinematic -->
-  <div class="bg-video">
-    <video autoplay loop muted>
-      <source src="bg/ghost-bg.webm" type="video/webm" />
-    </video>
-  </div>
-
-  <!-- Login Container -->
   <div class="login-container">
-    <!-- Logo Ashaterra -->
-    <svg class="logo" xmlns='http://www.w3.org/2000/svg' width='300' height='80'>
-      <text x='0' y='60' font-size='60' fill='white' font-family='serif'>Ashaterra</text>
-    </svg>
-
-    <!-- Form -->
-    <form id="loginForm">
-      <input type="email" placeholder="Email" required />
+    <div class="logo">ASHATERRA</div>
+    <form id="login-form">
+      <input type="email" placeholder="Email address" required />
       <input type="password" placeholder="Password" required />
-      <input type="text" placeholder="Captcha" id="captchaInput" required />
-      <div id="captchaBox"></div>
-      <button type="submit">Login</button>
-      <button type="button" onclick="toggleRegister()">Register</button>
+      <button type="submit">Enter World</button>
     </form>
-
-    <!-- Notifikasi -->
-    <div id="notifContainer"></div>
+    <div class="realm-selector">
+      <label>Choose Realm</label>
+      <select>
+        <option>Elaria</option>
+        <option>Nytheris</option>
+        <option>Volgrath</option>
+        <option>Zephyros</option>
+        <option>Mireval</option>
+        <option>Kraegor</option>
+        <option>Thalmor</option>
+      </select>
+    </div>
   </div>
 
-  <!-- RGB Strip -->
-  <div class="rgb-strip"></div>
+  <audio id="ambient" src="assets/ambient.mp3" loop autoplay></audio>
 
-  <!-- Script -->
-  <script>
-    // Ambient Audio
-    const audio = new Audio("assets/ambience.mp3");
-    audio.volume = 0.4;
-    audio.loop = true;
-    audio.play();
-
-    // Captcha dan Login Logic
-    document.addEventListener("DOMContentLoaded", function () {
-      const captchaBox = document.getElementById("captchaBox");
-      const captchaInput = document.getElementById("captchaInput");
-      const form = document.getElementById("loginForm");
-
-      let generated = Math.floor(1000 + Math.random() * 9000);
-      captchaBox.textContent = "Captcha: " + generated;
-
-      form.addEventListener("submit", function (e) {
-        e.preventDefault();
-        if (captchaInput.value !== generated.toString()) {
-          createNotif("Captcha salah", "error");
-          return;
-        }
-
-        createNotif("Login berhasil", "success");
-        localStorage.setItem("ashaterraUser", JSON.stringify({
-          email: form[0].value
-        }));
-
-        setTimeout(() => {
-          window.location.href = "charbuilder.html";
-        }, 1200);
-      });
-    });
-
-    // Notifikasi Visual
-    function createNotif(msg, type) {
-      const n = document.createElement("div");
-      n.textContent = msg;
-      n.style.padding = "1rem";
-      n.style.margin = "0.5rem";
-      n.style.borderRadius = "10px";
-      n.style.background = type === "success" ? "#00ff8866" :
-                           type === "error" ? "#ff004466" : "#444";
-      n.style.backdropFilter = "blur(8px)";
-      n.style.color = "white";
-      n.style.fontWeight = "bold";
-      document.getElementById("notifContainer").appendChild(n);
-      setTimeout(() => n.remove(), 3000);
-    }
-
-    // Dummy Toggle Register
-    function toggleRegister() {
-      createNotif("Form register belum tersedia.", "info");
-    }
-  </script>
+  <script src="js/main.js"></script>
 </body>
 </html>
