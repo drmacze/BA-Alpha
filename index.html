@@ -5,35 +5,40 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Ashaterra - Login</title>
   <link rel="stylesheet" href="css/style.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600&family=Orbitron:wght@500&display=swap" rel="stylesheet">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
 </head>
 <body>
   <canvas id="particles"></canvas>
-
   <div class="hud-overlay"></div>
 
-  <div class="login-container">
-    <div class="logo">ASHATERRA</div>
+  <div class="login-wrapper">
+    <div class="game-title">BLOODLINE: ASHATERRA</div>
     <form id="login-form">
-      <input type="email" placeholder="Email address" required />
+      <input type="text" placeholder="Username or Email" required />
       <input type="password" placeholder="Password" required />
-      <button type="submit">Enter World</button>
+      <button type="submit">LOGIN</button>
     </form>
-    <div class="realm-selector">
-      <label>Choose Realm</label>
+
+    <div class="realm-lore">
+      <label>Select Realm:</label>
       <select>
-        <option>Elaria</option>
-        <option>Nytheris</option>
-        <option>Volgrath</option>
-        <option>Zephyros</option>
-        <option>Mireval</option>
-        <option>Kraegor</option>
-        <option>Thalmor</option>
+        <option value="elaria">Elaria</option>
+        <option value="volgrath">Volgrath</option>
+        <option value="nytheris">Nytheris</option>
+        <option value="mireval">Mireval</option>
+        <option value="zephyros">Zephyros</option>
+        <option value="kraegor">Kraegor</option>
+        <option value="thalmor">Thalmor</option>
       </select>
     </div>
-    <div class="status-panel">
-      <p>🔒 Secure Connection</p>
-      <p>🪐 Server: Ashaterra Realm Alpha</p>
+
+    <div class="extras">
+      <button class="btn-secondary">🔍 Lore</button>
+      <button class="btn-secondary">⚙️ Server Status</button>
+      <button class="btn-secondary">📜 Patch Notes</button>
     </div>
   </div>
 
