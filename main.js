@@ -1,6 +1,6 @@
 window.addEventListener("DOMContentLoaded", () => {
-  gsap.from(".logo", { duration: 1, y: -50, opacity: 0, ease: "power3.out" });
-  gsap.from(".login-container", { duration: 1, scale: 0.8, opacity: 0, delay: 0.5 });
+  gsap.from(".logo", { duration: 1, y: -40, opacity: 0 });
+  gsap.from(".login-container", { duration: 1.2, opacity: 0, scale: 0.9, delay: 0.5 });
 
   document.getElementById("login-form").addEventListener("submit", function (e) {
     e.preventDefault();
@@ -13,7 +13,7 @@ window.addEventListener("DOMContentLoaded", () => {
         scale: 1.2,
         duration: 1,
         onComplete: () => {
-          document.body.innerHTML = '<h1 style="text-align:center;margin-top:20%">Loading Character Builder...</h1>';
+          document.body.innerHTML = '<h1 style="text-align:center;margin-top:20%">Welcome to Ashaterra...</h1>';
         },
       });
     } else {
